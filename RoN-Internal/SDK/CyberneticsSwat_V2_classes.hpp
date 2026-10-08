@@ -13,8 +13,7 @@
 #include "ReadyOrNot_classes.hpp"
 
 
-namespace SDK
-{
+SDK_NAMESPACE_START
 
 // BlueprintGeneratedClass CyberneticsSwat_V2.CyberneticsSwat_V2_C
 // 0x0000 (0x28E0 - 0x28E0)
@@ -36,5 +35,4 @@ public:
 };
 DUMPER7_ASSERTS_ACyberneticsSwat_V2_C;
 
-}
-
+SDK_NAMESPACE_END

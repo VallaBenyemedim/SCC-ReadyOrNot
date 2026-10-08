@@ -23,8 +23,7 @@
 #include "GameplayTags_structs.hpp"
 
 
-namespace SDK
-{
+SDK_NAMESPACE_START
 
 // Class CommonUI.CommonBoundActionButtonInterface
 // 0x0000 (0x0000 - 0x0000)
@@ -641,7 +640,7 @@ DUMPER7_ASSERTS_UCommonBorderStyle;
 // Class CommonUI.CommonBorder
 // 0x0020 (0x0370 - 0x0350)
 #pragma pack(push, 0x1)
-class alignas(0x10) UCommonBorder : public UBorder
+class SDK_ALIGN(0x10) UCommonBorder : public UBorder
 {
 public:
 	TSubclassOf<class UCommonBorderStyle>         Style;                                             // 0x0348(0x0008)(Edit, BlueprintVisible, BlueprintReadOnly, ZeroConstructor, NoDestructor, ExposeOnSpawn, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
@@ -877,7 +876,7 @@ DUMPER7_ASSERTS_UCommonListView;
 // Class CommonUI.CommonTextBlock
 // 0x0030 (0x03C0 - 0x0390)
 #pragma pack(push, 0x1)
-class alignas(0x10) UCommonTextBlock : public UTextBlock
+class SDK_ALIGN(0x10) UCommonTextBlock : public UTextBlock
 {
 public:
 	float                                         MobileFontSizeMultiplier;                          // 0x0388(0x0004)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
@@ -2131,5 +2130,4 @@ public:
 };
 DUMPER7_ASSERTS_UCommonActivatableWidgetQueue;
 
-}
-
+SDK_NAMESPACE_END

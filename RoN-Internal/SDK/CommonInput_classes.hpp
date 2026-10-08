@@ -11,15 +11,14 @@
 #include "Basic.hpp"
 
 #include "CoreUObject_classes.hpp"
+#include "CommonInput_structs.hpp"
 #include "Engine_structs.hpp"
 #include "Engine_classes.hpp"
-#include "CommonInput_structs.hpp"
 #include "DeveloperSettings_structs.hpp"
 #include "DeveloperSettings_classes.hpp"
 
 
-namespace SDK
-{
+SDK_NAMESPACE_START
 
 // Class CommonInput.CommonInputActionDomain
 // 0x0010 (0x0040 - 0x0030)
@@ -287,5 +286,4 @@ public:
 };
 DUMPER7_ASSERTS_UCommonInputSubsystem;
 
-}
-
+SDK_NAMESPACE_END

@@ -13,26 +13,25 @@
 #include "CoreUObject_structs.hpp"
 
 
-namespace SDK
-{
+SDK_NAMESPACE_START
 
 // ScriptStruct TypedElementFramework.TypedElementDataStorageColumn
 // 0x0000 (0x0000 - 0x0000)
 #pragma pack(push, 0x1)
-struct alignas(0x01) FTypedElementDataStorageColumn
+struct SDK_ALIGN(0x01) FTypedElementDataStorageColumn
 {
 };
 #pragma pack(pop)
 DUMPER7_ASSERTS_FTypedElementDataStorageColumn;
 
-// ScriptStruct TypedElementFramework.TypedElementExternalObjectColumn
+// ScriptStruct TypedElementFramework.TypedElementLabelHashColumn
 // 0x0008 (0x0008 - 0x0000)
-struct alignas(0x08) FTypedElementExternalObjectColumn final : public FTypedElementDataStorageColumn
+struct FTypedElementLabelHashColumn final : public FTypedElementDataStorageColumn
 {
 public:
-	uint8                                         Pad_0[0x8];                                        // 0x0000(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	uint64                                        LabelHash;                                         // 0x0000(0x0008)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_FTypedElementExternalObjectColumn;
+DUMPER7_ASSERTS_FTypedElementLabelHashColumn;
 
 // ScriptStruct TypedElementFramework.ScriptTypedElementHandle
 // 0x0008 (0x0008 - 0x0000)
@@ -51,6 +50,15 @@ public:
 	uint8                                         Pad_0[0x8];                                        // 0x0000(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
 DUMPER7_ASSERTS_FTypedElementUObjectColumn;
+
+// ScriptStruct TypedElementFramework.TypedElementExternalObjectColumn
+// 0x0008 (0x0008 - 0x0000)
+struct alignas(0x08) FTypedElementExternalObjectColumn final : public FTypedElementDataStorageColumn
+{
+public:
+	uint8                                         Pad_0[0x8];                                        // 0x0000(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FTypedElementExternalObjectColumn;
 
 // ScriptStruct TypedElementFramework.TypedElementDataStorageTag
 // 0x0001 (0x0001 - 0x0000)
@@ -78,15 +86,6 @@ public:
 	class FString                                 Label;                                             // 0x0000(0x0010)(ZeroConstructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
 DUMPER7_ASSERTS_FTypedElementLabelColumn;
-
-// ScriptStruct TypedElementFramework.TypedElementLabelHashColumn
-// 0x0008 (0x0008 - 0x0000)
-struct FTypedElementLabelHashColumn final : public FTypedElementDataStorageColumn
-{
-public:
-	uint64                                        LabelHash;                                         // 0x0000(0x0008)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FTypedElementLabelHashColumn;
 
 // ScriptStruct TypedElementFramework.ScriptTypedElementListProxy
 // 0x0010 (0x0010 - 0x0000)
@@ -129,6 +128,15 @@ public:
 };
 DUMPER7_ASSERTS_FTypedElementPackagePathColumn;
 
+// ScriptStruct TypedElementFramework.TypedElementU32IntValueCacheColumn
+// 0x0004 (0x0004 - 0x0000)
+struct FTypedElementU32IntValueCacheColumn final : public FTypedElementDataStorageColumn
+{
+public:
+	uint32                                        Value;                                             // 0x0000(0x0004)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_FTypedElementU32IntValueCacheColumn;
+
 // ScriptStruct TypedElementFramework.TypedElementPackageLoadedPathColumn
 // 0x000C (0x000C - 0x0000)
 struct alignas(0x04) FTypedElementPackageLoadedPathColumn final : public FTypedElementDataStorageColumn
@@ -163,6 +171,15 @@ struct FTypedElementSlateWidgetReferenceDeletesRowTag final : public FTypedEleme
 };
 DUMPER7_ASSERTS_FTypedElementSlateWidgetReferenceDeletesRowTag;
 
+// ScriptStruct TypedElementFramework.TypedElementFloatValueCacheColumn
+// 0x0004 (0x0004 - 0x0000)
+struct FTypedElementFloatValueCacheColumn final : public FTypedElementDataStorageColumn
+{
+public:
+	float                                         Value;                                             // 0x0000(0x0004)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_FTypedElementFloatValueCacheColumn;
+
 // ScriptStruct TypedElementFramework.TypedElementLocalTransformColumn
 // 0x0060 (0x0060 - 0x0000)
 struct FTypedElementLocalTransformColumn final : public FTypedElementDataStorageColumn
@@ -189,15 +206,6 @@ public:
 	uint8                                         Pad_0[0x8];                                        // 0x0000(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
 DUMPER7_ASSERTS_FTypedElementScriptStructTypeInfoColumn;
-
-// ScriptStruct TypedElementFramework.TypedElementU32IntValueCacheColumn
-// 0x0004 (0x0004 - 0x0000)
-struct FTypedElementU32IntValueCacheColumn final : public FTypedElementDataStorageColumn
-{
-public:
-	uint32                                        Value;                                             // 0x0000(0x0004)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FTypedElementU32IntValueCacheColumn;
 
 // ScriptStruct TypedElementFramework.TypedElementI32IntValueCacheColumn
 // 0x0004 (0x0004 - 0x0000)
@@ -226,15 +234,6 @@ public:
 };
 DUMPER7_ASSERTS_FTypedElementI64IntValueCacheColumn;
 
-// ScriptStruct TypedElementFramework.TypedElementFloatValueCacheColumn
-// 0x0004 (0x0004 - 0x0000)
-struct FTypedElementFloatValueCacheColumn final : public FTypedElementDataStorageColumn
-{
-public:
-	float                                         Value;                                             // 0x0000(0x0004)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FTypedElementFloatValueCacheColumn;
-
 // ScriptStruct TypedElementFramework.TypedElementViewportColorColumn
 // 0x0001 (0x0001 - 0x0000)
 struct FTypedElementViewportColorColumn final : public FTypedElementDataStorageColumn
@@ -244,5 +243,4 @@ public:
 };
 DUMPER7_ASSERTS_FTypedElementViewportColorColumn;
 
-}
-
+SDK_NAMESPACE_END

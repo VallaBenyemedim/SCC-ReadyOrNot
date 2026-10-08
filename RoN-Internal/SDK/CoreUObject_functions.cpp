@@ -14,8 +14,7 @@
 #include "CoreUObject_parameters.hpp"
 
 
-namespace SDK
-{
+SDK_NAMESPACE_START
 
 // Predefined Function
 // Finds a UObject in the global object array by name, optionally with ECastFlags to reduce heavy string comparison
@@ -165,13 +164,8 @@ bool UStruct::IsSubclassOf(const UStruct* Base) const
 	if (!Base)
 		return false;
 
-	for (const UStruct* Struct = this; Struct; Struct = Struct->SuperStruct)
-	{
-		if (Struct == Base)
-			return true;
-	}
-
-	return false;
+	const int32 NumParentStructBasesInChainMinusOne = Base->BaseChain.NumStructBasesInChainMinusOne;
+	return NumParentStructBasesInChainMinusOne <= BaseChain.NumStructBasesInChainMinusOne && BaseChain.StructBaseChainArray[NumParentStructBasesInChainMinusOne] == &Base->BaseChain;
 }
 
 
@@ -196,6 +190,45 @@ bool UStruct::IsSubclassOf(const FName& BaseClassName) const
 // Predefined Function
 // Gets a UFunction from this UClasses' 'Children' list
 
+class UFunction* UClass::GetFunction(const FName& ClassName, const FName& FuncName) const
+{
+	for (const UStruct* Clss = this; Clss; Clss = Clss->SuperStruct)
+	{
+		if (Clss->Name != ClassName)
+			continue;
+
+		for (UField* Field = Clss->Children; Field; Field = Field->Next)
+		{
+			if (Field->HasTypeFlag(EClassCastFlags::Function) && Field->Name == FuncName)
+				return static_cast<class UFunction*>(Field);
+		}
+	}
+
+	return nullptr;
+}
+
+
+// Predefined Function
+// Gets the first UFunction from the UClass inheritance hierarchy
+
+class UFunction* UClass::GetFunction(const FName& FuncName) const
+{
+	for (const UStruct* Clss = this; Clss; Clss = Clss->SuperStruct)
+	{
+		for (UField* Field = Clss->Children; Field; Field = Field->Next)
+		{
+			if (Field->HasTypeFlag(EClassCastFlags::Function) && Field->Name == FuncName)
+				return static_cast<class UFunction*>(Field);
+		}
+	}
+
+	return nullptr;
+}
+
+
+// Predefined Function
+// Gets a UFunction from this UClasses' 'Children' list
+
 class UFunction* UClass::GetFunction(const char* ClassName, const char* FuncName) const
 {
 	for(const UStruct* Clss = this; Clss; Clss = Clss->SuperStruct)
@@ -213,5 +246,5 @@ class UFunction* UClass::GetFunction(const char* ClassName, const char* FuncName
 	return nullptr;
 }
 
-}
 
+SDK_NAMESPACE_END

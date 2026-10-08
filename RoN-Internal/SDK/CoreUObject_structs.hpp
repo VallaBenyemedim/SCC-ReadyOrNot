@@ -11,8 +11,7 @@
 #include "Basic.hpp"
 
 
-namespace SDK
-{
+SDK_NAMESPACE_START
 
 // Enum CoreUObject.EAutomationEventType
 // NumValues: 0x0004
@@ -2132,5 +2131,4 @@ public:
 };
 DUMPER7_ASSERTS_FVector4f;
 
-}
-
+SDK_NAMESPACE_END

@@ -11,18 +11,46 @@
 #define VC_EXTRALEAN
 #define WIN32_LEAN_AND_MEAN
 
+
+/*
+* Macros for opening and closing namespaces, in order to allow to remove the SDK namespace when importing the SDK into IDA.
+*
+* In IDA under "Options>Compiler" set "SourceParser" to "clang" and add the following arguments 
+* 
+*	-std=c++20 -Wno-invalid-offsetof -Wno-c++11-narrowing -D IMPORT_CPP_SDK_INTO_IDA=1 
+* 
+* Omit the '-D IMPORT_CPP_SDK_INTO_IDA=1' if you want to keep the SDK namespace in IDA
+*/
+#ifndef IMPORT_CPP_SDK_INTO_IDA
+	#define SDK_NAMESPACE_NAME SDK
+	#define SDK_NAMESPACE_START namespace SDK_NAMESPACE_NAME {
+	#define SDK_NAMESPACE_END }
+	#define SDK_ALIGN(x) alignas(x)
+#else
+	#define SDK_NAMESPACE_NAME
+	#define SDK_NAMESPACE_START
+	#define SDK_NAMESPACE_END
+	#define SDK_ALIGN(x)
+#endif
+
+#define SDK_PARAM_NAMESPACE_START namespace Params {
+#define SDK_PARAM_NAMESPACE_END }
+
+
 #include <string>
 #include <functional>
 #include <type_traits>
+#include <format>
 
 #include "PropertyFixup.hpp"
 #include "UnrealContainers.hpp"
 #include "Assertions.inl"
 
-namespace SDK
-{
+SDK_NAMESPACE_START
 
+#ifndef IMPORT_CPP_SDK_INTO_IDA
 using namespace UC;
+#endif // IMPORT_CPP_SDK_INTO_IDA
 
 #include "NameCollisions.inl"
 
@@ -33,11 +61,11 @@ using namespace UC;
 */
 namespace Offsets
 {
-	constexpr int32 GObjects          = 0x08CC5570;
-	constexpr int32 AppendString      = 0x00C927B0;
-	constexpr int32 GNames            = 0x08BC3CB8;
-	constexpr int32 GWorld            = 0x08E33888;
-	constexpr int32 ProcessEvent      = 0x00E4D970;
+	constexpr int32 GObjects          = 0x08C26570;
+	constexpr int32 AppendString      = 0x00C98400;
+	constexpr int32 GNames            = 0x08B24CB8;
+	constexpr int32 GWorld            = 0x08D94888;
+	constexpr int32 ProcessEvent      = 0x00E535C0;
 	constexpr int32 ProcessEventIdx   = 0x0000004D;
 }
 
@@ -66,10 +94,10 @@ namespace InSDKUtils
 class UClass;
 class UObject;
 class UFunction;
-
+class UScriptStruct;
 class FName;
 
-namespace BasicFilesImpleUtils
+namespace BasicFilesImplUtils
 {
 	// Helper functions for GetStaticClass and GetStaticBPGeneratedClass
 	UClass* FindClassByName(const std::string& Name, bool bByFullName = false);
@@ -86,6 +114,8 @@ namespace BasicFilesImpleUtils
 	UFunction* FindFunctionByFName(const FName* Name);
 
 	FName StringToName(const wchar_t* Name);
+
+	UObject* GetDefaultObjectImpl(UClass* ClassInstance);
 }
 
 const FName& GetStaticName(const wchar_t* Name, FName& StaticName);
@@ -96,10 +126,10 @@ class UClass* GetStaticClassImpl(const char* Name, class UClass*& StaticClass)
 	if (StaticClass == nullptr)
 	{
 		if constexpr (bIsFullName) {
-			StaticClass = BasicFilesImpleUtils::FindClassByFullName(Name);
+			StaticClass = BasicFilesImplUtils::FindClassByFullName(Name);
 		}
 		else /* default */ {
-			StaticClass = BasicFilesImpleUtils::FindClassByName(Name);
+			StaticClass = BasicFilesImplUtils::FindClassByName(Name);
 		}
 	}
 
@@ -114,8 +144,8 @@ class UClass* GetStaticBPGeneratedClass(const char* Name, int32& ClassIdx, uint6
 		{
 			if (Class)
 			{
-				Index = BasicFilesImpleUtils::GetObjectIndex(Class);
-				ClassName = BasicFilesImpleUtils::GetObjFNameAsUInt64(Class);
+				Index = BasicFilesImplUtils::GetObjectIndex(Class);
+				ClassName = BasicFilesImplUtils::GetObjFNameAsUInt64(Class);
 			}
 
 			return Class;
@@ -125,26 +155,26 @@ class UClass* GetStaticBPGeneratedClass(const char* Name, int32& ClassIdx, uint6
 	if constexpr (bIsFullName)
 	{
 		if (ClassIdx == 0x0) [[unlikely]]
-			return SetClassIndex(BasicFilesImpleUtils::FindClassByFullName(Name), ClassIdx, ClassNameIdx);
+			return SetClassIndex(BasicFilesImplUtils::FindClassByFullName(Name), ClassIdx, ClassNameIdx);
 
-		UClass* ClassObj = static_cast<UClass*>(BasicFilesImpleUtils::GetObjectByIndex(ClassIdx));
+		UClass* ClassObj = reinterpret_cast<UClass*>(BasicFilesImplUtils::GetObjectByIndex(ClassIdx));
 
 		/* Could use cast flags too to save some string comparisons */
-		if (!ClassObj || BasicFilesImpleUtils::GetObjFNameAsUInt64(ClassObj) != ClassNameIdx)
-			return SetClassIndex(BasicFilesImpleUtils::FindClassByFullName(Name), ClassIdx, ClassNameIdx);
+		if (!ClassObj || BasicFilesImplUtils::GetObjFNameAsUInt64(ClassObj) != ClassNameIdx)
+			return SetClassIndex(BasicFilesImplUtils::FindClassByFullName(Name), ClassIdx, ClassNameIdx);
 
 		return ClassObj;
 	}
 	else /* Default, use just the name to find an object*/
 	{
 		if (ClassIdx == 0x0) [[unlikely]]
-			return SetClassIndex(BasicFilesImpleUtils::FindClassByName(Name), ClassIdx, ClassNameIdx);
+			return SetClassIndex(BasicFilesImplUtils::FindClassByName(Name), ClassIdx, ClassNameIdx);
 
-		UClass* ClassObj = static_cast<UClass*>(BasicFilesImpleUtils::GetObjectByIndex(ClassIdx));
+		UClass* ClassObj = reinterpret_cast<UClass*>(BasicFilesImplUtils::GetObjectByIndex(ClassIdx));
 
 		/* Could use cast flags too to save some string comparisons */
-		if (!ClassObj || BasicFilesImpleUtils::GetObjFNameAsUInt64(ClassObj) != ClassNameIdx)
-			return SetClassIndex(BasicFilesImpleUtils::FindClassByName(Name), ClassIdx, ClassNameIdx);
+		if (!ClassObj || BasicFilesImplUtils::GetObjFNameAsUInt64(ClassObj) != ClassNameIdx)
+			return SetClassIndex(BasicFilesImplUtils::FindClassByName(Name), ClassIdx, ClassNameIdx);
 
 		return ClassObj;
 	}
@@ -153,14 +183,7 @@ class UClass* GetStaticBPGeneratedClass(const char* Name, int32& ClassIdx, uint6
 template<class ClassType>
 ClassType* GetDefaultObjImpl()
 {
-	UClass* StaticClass = ClassType::StaticClass();
-
-	if (StaticClass)
-	{
-		return reinterpret_cast<ClassType*>(StaticClass->ClassDefaultObject);
-	}
-
-	return nullptr;
+	return reinterpret_cast<ClassType*>(BasicFilesImplUtils::GetDefaultObjectImpl(ClassType::StaticClass()));
 }
 
 #define STATIC_CLASS_IMPL(NameString) \
@@ -417,7 +440,7 @@ public:
 		return ClassPtr;
 	}
 
-	template<typename Target, typename = std::enable_if<std::is_base_of_v<Target, ClassType>, bool>::type>
+	template<typename Target, typename = typename std::enable_if<std::is_base_of_v<Target, ClassType>, bool>::type>
 	inline operator TSubclassOf<Target>() const
 	{
 		return ClassPtr;
@@ -455,6 +478,17 @@ public:
 		return ClassPtr != Other;
 	}
 };
+
+// Predefined struct FStructBaseChain
+// 0x0010 (0x0010 - 0x0000)
+struct FStructBaseChain
+{
+public:
+	FStructBaseChain**                            StructBaseChainArray;                              // 0x0000(0x0008)(NOT AUTO-GENERATED PROPERTY)
+	int32                                         NumStructBasesInChainMinusOne;                     // 0x0008(0x0004)(NOT AUTO-GENERATED PROPERTY)
+};
+DUMPER7_ASSERTS_FStructBaseChain;
+
 namespace FTextImpl
 {
 // Predefined struct FTextData
@@ -752,7 +786,6 @@ template<typename FunctionSignature>
 class TDelegate
 {
 public:
-	struct InvalidUseOfTDelegate                  TemplateParamIsNotAFunctionSignature;              // 0x0000(0x0000)(NOT AUTO-GENERATED PROPERTY)
 	uint8                                         Pad_0[0x10];                                       // 0x0000(0x0010)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
 
@@ -771,7 +804,7 @@ template<typename FunctionSignature>
 class TMulticastInlineDelegate
 {
 public:
-	struct InvalidUseOfTMulticastInlineDelegate   TemplateParamIsNotAFunctionSignature;              // 0x0000(0x0010)(NOT AUTO-GENERATED PROPERTY)
+	uint8                                         Pad_0[0x10];                                       // 0x0000(0x0010)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
 
 // Predefined struct TMulticastInlineDelegate<Ret(Args...)>
@@ -783,24 +816,108 @@ public:
 	TArray<FScriptDelegate>                       InvocationList;                                    // 0x0000(0x0010)(NOT AUTO-GENERATED PROPERTY)
 };
 
-#define UE_ENUM_OPERATORS(EEnumClass)																																	\
+template<typename EnumType, typename UnderlyingType>
+class TFixedSizeEnum
+{
+private:
+	static_assert(std::is_enum_v<EnumType>, "EnumType must be an enum!");
+	static_assert(std::is_integral_v<UnderlyingType>, "UnderlyingType must be an integral type!");
+
+public:
+	UnderlyingType EnumValue = 0;
+
+public:
+	constexpr TFixedSizeEnum() = default;
+	constexpr TFixedSizeEnum(const EnumType InEnumValue)
+		: EnumValue(static_cast<UnderlyingType>(InEnumValue))
+	{
+	}
+
+public:
+	constexpr TFixedSizeEnum(TFixedSizeEnum&&) = default;
+	constexpr TFixedSizeEnum(const TFixedSizeEnum&) = default;
+
+	constexpr TFixedSizeEnum& operator=(TFixedSizeEnum&&) = default;
+	constexpr TFixedSizeEnum& operator=(const TFixedSizeEnum&) = default;
+
+public:
+	constexpr inline bool operator==(const TFixedSizeEnum Other) const
+	{
+		return EnumValue == Other.EnumValue;
+	}
+	constexpr inline bool operator==(const EnumType Other) const
+	{
+		return EnumValue == static_cast<UnderlyingType>(Other);
+	}
+
+	constexpr std::strong_ordering operator<=>(TFixedSizeEnum Other) const
+	{
+		return EnumValue <=> Other.EnumValue;
+	}
+	constexpr std::strong_ordering operator<=>(EnumType Other) const
+	{
+		return EnumValue <=> static_cast<UnderlyingType>(Other);
+	}
+};
+
+template<typename EnumType>
+using T1ByteSignedEnum = TFixedSizeEnum<EnumType, int8>;
+
+template<typename EnumType>
+using T2ByteSignedEnum = TFixedSizeEnum<EnumType, int16>;
+
+template<typename EnumType>
+using T4ByteSignedEnum = TFixedSizeEnum<EnumType, int32>;
+
+template<typename EnumType>
+using T8ByteSignedEnum = TFixedSizeEnum<EnumType, int64>;
+
+template<typename EnumType>
+using T1ByteEnum = TFixedSizeEnum<EnumType, uint8>;
+
+template<typename EnumType>
+using T2ByteEnum = TFixedSizeEnum<EnumType, uint16>;
+
+template<typename EnumType>
+using T4ByteEnum = TFixedSizeEnum<EnumType, uint32>;
+
+template<typename EnumType>
+using T8ByteEnum = TFixedSizeEnum<EnumType, uint64>;
+
+
+#define UE_ENUM_OPERATORS(EEnumClassType)																													\
 																																										\
-inline constexpr EEnumClass operator|(EEnumClass Left, EEnumClass Right)																								\
+inline constexpr EEnumClassType operator|(EEnumClassType Left, EEnumClassType Right)															 			\
 {																																										\
-	return (EEnumClass)((std::underlying_type<EEnumClass>::type)(Left) | (std::underlying_type<EEnumClass>::type)(Right));												\
+	using EnumUnderlayingType = std::underlying_type<EEnumClassType>::type;																					\
+																																							\
+	return static_cast<EEnumClassType>(static_cast<EnumUnderlayingType>(Left) | static_cast<EnumUnderlayingType>(Right));									\
 }																																										\
 																																										\
-inline constexpr EEnumClass& operator|=(EEnumClass& Left, EEnumClass Right)																								\
+inline EEnumClassType& operator|=(EEnumClassType& Left, EEnumClassType Right)																				\
 {																																										\
-	return (EEnumClass&)((std::underlying_type<EEnumClass>::type&)(Left) |= (std::underlying_type<EEnumClass>::type)(Right));											\
+    using EnumUnderlayingType = std::underlying_type<EEnumClassType>::type;																					\
+																																							\
+    reinterpret_cast<EnumUnderlayingType&>(Left) |= static_cast<EnumUnderlayingType>(Right);																\
+	return Left;																																			\
 }																																										\
 																																										\
-inline bool operator&(EEnumClass Left, EEnumClass Right)																												\
+inline EEnumClassType& operator|=(EEnumClassType& Left, std::underlying_type<EEnumClassType>::type Right)													\
 {																																										\
-	return (((std::underlying_type<EEnumClass>::type)(Left) & (std::underlying_type<EEnumClass>::type)(Right)) == (std::underlying_type<EEnumClass>::type)(Right));		\
+	using EnumUnderlayingType = std::underlying_type<EEnumClassType>::type;																					\
+																																							\
+	reinterpret_cast<EnumUnderlayingType&>(Left) |= Right;																									\
+	return Left;																																			\
+}																																										\
+																																										\
+inline bool operator&(EEnumClassType Left, EEnumClassType Right)																							\
+{																																										\
+	using EnumUnderlayingType = std::underlying_type<EEnumClassType>::type;																					\
+																																							\
+	return ((static_cast<EnumUnderlayingType>(Left) & static_cast<EnumUnderlayingType>(Right)) == static_cast<EnumUnderlayingType>(Right));					\
 }																																										
 
-enum class EObjectFlags : int32
+enum class EObjectFlags : uint32
 {
 	NoFlags							= 0x00000000,
 
@@ -1264,5 +1381,60 @@ using TObjectBasedCycleFixup = CyclicDependencyFixupImpl::TCyclicClassFixup<Unde
 template<typename UnderlayingClassType, int32 Size, int32 Align = 0x8>
 using TActorBasedCycleFixup = CyclicDependencyFixupImpl::TCyclicClassFixup<UnderlayingClassType, Size, Align, class AActor>;
 
-}
+SDK_NAMESPACE_END
 
+
+template <typename T>
+	requires std::derived_from<T, SDK_NAMESPACE_NAME ::UObject>
+struct std::formatter<T*> : std::formatter<std::string>
+{
+	auto format(T* Object, std::format_context& Context) const
+	{
+		const std::string ClassName = Object && Object->Class ? Object->Class->GetName() : T::StaticClass()->GetName();
+		if (Object)
+		{
+			return std::formatter<std::string>::format(std::format("{}(0x{:X}, {})", ClassName, reinterpret_cast<uintptr_t>(Object), Object->GetName()), Context);
+		}
+		else
+		{
+			return std::formatter<std::string>::format(std::format("{}(nullptr)", ClassName), Context);
+		}
+	}
+};
+
+template <typename T>
+	requires std::derived_from<T, SDK_NAMESPACE_NAME ::UObject>
+struct std::formatter<SDK_NAMESPACE_NAME ::TSubclassOf<T>> : std::formatter<std::string>
+{
+	auto format(SDK_NAMESPACE_NAME ::TSubclassOf<T> Class, std::format_context& Context) const
+	{
+		return std::formatter<std::string>::format(Class.Get() ? Class.Get()->GetName() : std::format("{}(nullptr)", T::StaticClass()->GetName()), Context);
+	}
+};
+
+template <>
+struct std::formatter<SDK_NAMESPACE_NAME ::FName> : std::formatter<std::string>
+{
+	auto format(SDK_NAMESPACE_NAME ::FName Name, std::format_context& Context) const
+	{
+		return std::formatter<std::string>::format(Name.ToString(), Context);
+	}
+};
+
+template <>
+struct std::formatter<SDK_NAMESPACE_NAME ::FString> : std::formatter<std::string>
+{
+	auto format(SDK_NAMESPACE_NAME ::FString String, std::format_context& Context) const
+	{
+		return std::formatter<std::string>::format(String.ToString(), Context);
+	}
+};
+
+template <>
+struct std::formatter<SDK_NAMESPACE_NAME ::FText> : std::formatter<std::string>
+{
+	auto format(SDK_NAMESPACE_NAME ::FText Text, std::format_context& Context) const
+	{
+		return std::formatter<std::string>::format(Text.ToString(), Context);
+	}
+};

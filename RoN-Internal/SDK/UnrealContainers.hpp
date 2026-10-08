@@ -11,10 +11,14 @@
 #include <string>
 #include <stdexcept>
 #include <iostream>
+#include <optional>
 #include "UtfN.hpp"
 
+#ifndef IMPORT_CPP_SDK_INTO_IDA
 namespace UC
 {	
+#endif // IMPORT_CPP_SDK_INTO_IDA
+
 	typedef int8_t  int8;
 	typedef int16_t int16;
 	typedef int32_t int32;
@@ -193,8 +197,8 @@ namespace UC
 		template<typename SetType>
 		class SetElement
 		{
-		private:
-			template<typename SetDataType>
+		public:
+			template<typename SetElementType>
 			friend class TSet;
 
 		private:
@@ -309,6 +313,43 @@ namespace UC
 				memset(Data, 0, NumElements * ElementSize);
 		}
 
+    public:
+        template<typename OtherType>
+        inline std::optional<ArrayElementType> Find(const OtherType& ElementToSearch, bool(*IsEqual)(const ArrayElementType&, const OtherType&)) const
+        {
+            for (const auto& Element : *this)
+            {
+                if (IsEqual(Element, ElementToSearch))
+                    return Element;
+            }
+
+            return {};
+        }
+
+        inline std::optional<ArrayElementType> Find(const ArrayElementType& ElementToSearch) const
+            requires std::equality_comparable<ArrayElementType>
+        {
+            for (const auto& Element : *this)
+            {
+                if (Element == ElementToSearch)
+                    return Element;
+            }
+
+            return {};
+        }
+
+        template<typename OtherType>
+        inline bool Contains(const OtherType& ElementToSearch,     bool(*IsEqual)(const ArrayElementType&, const OtherType&)) const
+        {
+            return Find<OtherType>(ElementToSearch, IsEqual).has_value();
+        }
+
+        inline bool Contains(const ArrayElementType& ElementToSearch) const
+            requires std::equality_comparable<ArrayElementType>
+        {
+            return Find(ElementToSearch).has_value();
+        }
+
 	public:
 		inline int32 Num() const { return NumElements; }
 		inline int32 Max() const { return MaxElements; }
@@ -336,7 +377,7 @@ namespace UC
 	class FString : public TArray<wchar_t>
 	{
 	public:
-		friend std::ostream& operator<<(std::ostream& Stream, const UC::FString& Str) { return Stream << Str.ToString(); }
+		friend std::ostream& operator<<(std::ostream& Stream, const FString& Str) { return Stream << Str.ToString(); }
 
 	public:
 		using TArray::TArray;
@@ -389,7 +430,7 @@ namespace UC
 	class FUtf8String : public TArray<char8_t>
 	{
 	public:
-		friend std::ostream& operator<<(std::ostream& Stream, const UC::FUtf8String& Str) { return Stream << Str.ToString(); }
+		friend std::ostream& operator<<(std::ostream& Stream, const FUtf8String& Str) { return Stream << Str.ToString(); }
 
 	private:
 		inline const char* GetDataAsConstCharPtr() const
@@ -448,7 +489,7 @@ namespace UC
 	class FAnsiString : public TArray<char>
 	{
 	public:
-		friend std::ostream& operator<<(std::ostream& Stream, const UC::FAnsiString& Str) { return Stream << Str.ToString(); }
+		friend std::ostream& operator<<(std::ostream& Stream, const FAnsiString& Str) { return Stream << Str.ToString(); }
 
 	public:
 		using TArray::TArray;
@@ -869,7 +910,6 @@ namespace UC
 
 		public:
 			inline TContainerIterator& operator++() { ++BitIterator; return *this; }
-			inline TContainerIterator& operator--() { --BitIterator; return *this; }
 
 			inline       auto& operator*()       { return IteratedContainer[GetIndex()]; }
 			inline const auto& operator*() const { return IteratedContainer[GetIndex()]; }
@@ -906,4 +946,7 @@ namespace UC
 	static_assert(sizeof(TSet<int32>) == 0x3C, "TSet has a wrong size!");
 	static_assert(sizeof(TMap<int32, int32>) == 0x3C, "TMap has a wrong size!");
 #endif
+
+#ifndef IMPORT_CPP_SDK_INTO_IDA
 }
+#endif // IMPORT_CPP_SDK_INTO_IDA

@@ -19,8 +19,7 @@
 #include "MovieScene_classes.hpp"
 
 
-namespace SDK
-{
+SDK_NAMESPACE_START
 
 // Class FMODStudio.FMODAmbientSound
 // 0x0008 (0x02A8 - 0x02A0)
@@ -108,7 +107,7 @@ public:
 	uint8                                         Pad_309[0x7];                                      // 0x0309(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
 	TMulticastInlineDelegate<void()>              OnEventStopped;                                    // 0x0310(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, NativeAccessSpecifierPublic)
 	TMulticastInlineDelegate<void()>              OnSoundStopped;                                    // 0x0320(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, NativeAccessSpecifierPublic)
-	TMulticastInlineDelegate<void(const class FString& Name, int32 Position)> OnTimelineMarker;      // 0x0330(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, NativeAccessSpecifierPublic)
+	TMulticastInlineDelegate<void(const class FString& Name_0, int32 Position)> OnTimelineMarker;    // 0x0330(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, NativeAccessSpecifierPublic)
 	TMulticastInlineDelegate<void(int32 Bar, int32 Beat, int32 Position, float Tempo, int32 TimeSignatureUpper, int32 TimeSignatureLower)> OnTimelineBeat; // 0x0340(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, NativeAccessSpecifierPublic)
 	struct FFMODAttenuationDetails                AttenuationDetails;                                // 0x0350(0x000C)(Edit, BlueprintVisible, NoDestructor, NativeAccessSpecifierPublic)
 	struct FFMODOcclusionDetails                  OcclusionDetails;                                  // 0x035C(0x0003)(Edit, BlueprintVisible, NoDestructor, NativeAccessSpecifierPublic)
@@ -645,5 +644,4 @@ public:
 };
 DUMPER7_ASSERTS_UFMODWorldSubsystem;
 
-}
-
+SDK_NAMESPACE_END

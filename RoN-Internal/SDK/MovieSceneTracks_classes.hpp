@@ -21,8 +21,7 @@
 #include "AnimGraphRuntime_structs.hpp"
 
 
-namespace SDK
-{
+SDK_NAMESPACE_START
 
 // Class MovieSceneTracks.MovieScenePropertySystem
 // 0x0018 (0x0058 - 0x0040)
@@ -3540,5 +3539,4 @@ public:
 };
 DUMPER7_ASSERTS_UMovieSceneVisibilityTrack;
 
-}
-
+SDK_NAMESPACE_END

@@ -10,14 +10,13 @@
 
 #include "Basic.hpp"
 
+#include "Chaos_structs.hpp"
 #include "CoreUObject_classes.hpp"
 #include "PhysicsCore_structs.hpp"
-#include "Chaos_structs.hpp"
 #include "DeveloperSettings_classes.hpp"
 
 
-namespace SDK
-{
+SDK_NAMESPACE_START
 
 // Class PhysicsCore.PhysicalMaterialPropertyBase
 // 0x0000 (0x0028 - 0x0028)
@@ -188,5 +187,4 @@ public:
 };
 DUMPER7_ASSERTS_UPhysicsSettingsCore;
 
-}
-
+SDK_NAMESPACE_END

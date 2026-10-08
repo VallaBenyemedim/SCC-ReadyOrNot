@@ -11,8 +11,7 @@
 #include "Basic.hpp"
 
 
-namespace SDK
-{
+SDK_NAMESPACE_START
 
 // Enum ObjectPooler.EObjectPoolRetrieveActorResult
 // NumValues: 0x0003
@@ -32,20 +31,6 @@ enum class EObjectPoolReuseSetting : uint8
 	CreateNewActor                           = 2,
 	EObjectPoolReuseSetting_MAX              = 3,
 };
-
-// ScriptStruct ObjectPooler.ObjectPoolManager
-// 0x0038 (0x0038 - 0x0000)
-struct FObjectPoolManager final
-{
-public:
-	uint8                                         bEnabled : 1;                                      // 0x0000(0x0001)(BitIndex: 0x00, PropSize: 0x0001 (Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic))
-	uint8                                         Pad_1[0x3];                                        // 0x0001(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
-	class FName                                   ManagerName;                                       // 0x0004(0x0008)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_C[0x4];                                        // 0x000C(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
-	TArray<TSubclassOf<class UObjectPoolBase>>    ObjectPools;                                       // 0x0010(0x0010)(Edit, ZeroConstructor, UObjectWrapper, NativeAccessSpecifierPublic)
-	class FText                                   Note;                                              // 0x0020(0x0018)(Edit, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FObjectPoolManager;
 
 // ScriptStruct ObjectPooler.PlatformPoolSettings
 // 0x000C (0x000C - 0x0000)
@@ -72,5 +57,18 @@ public:
 };
 DUMPER7_ASSERTS_FObjectPoolWarmUpSetting;
 
-}
+// ScriptStruct ObjectPooler.ObjectPoolManager
+// 0x0038 (0x0038 - 0x0000)
+struct FObjectPoolManager final
+{
+public:
+	uint8                                         bEnabled : 1;                                      // 0x0000(0x0001)(BitIndex: 0x00, PropSize: 0x0001 (Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic))
+	uint8                                         Pad_1[0x3];                                        // 0x0001(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
+	class FName                                   ManagerName;                                       // 0x0004(0x0008)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_C[0x4];                                        // 0x000C(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
+	TArray<TSubclassOf<class UObjectPoolBase>>    ObjectPools;                                       // 0x0010(0x0010)(Edit, ZeroConstructor, UObjectWrapper, NativeAccessSpecifierPublic)
+	class FText                                   Note;                                              // 0x0020(0x0018)(Edit, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_FObjectPoolManager;
 
+SDK_NAMESPACE_END

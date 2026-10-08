@@ -14,20 +14,19 @@
 #include "ReadyOrNot_classes.hpp"
 
 
-namespace SDK
-{
+SDK_NAMESPACE_START
 
 // BlueprintGeneratedClass CyberneticsSuspect_V2.CyberneticsSuspect_V2_C
-// 0x0010 (0x28A0 - 0x2890)
+// 0x0010 (0x28B0 - 0x28A0)
 class ACyberneticsSuspect_V2_C final : public ASuspectCharacter
 {
 public:
-	struct FPointerToUberGraphFrame               UberGraphFrame;                                    // 0x2890(0x0008)(ZeroConstructor, Transient, DuplicateTransient)
-	class FName                                   In_Bone_Name;                                      // 0x2898(0x0008)(Edit, BlueprintVisible, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
+	struct FPointerToUberGraphFrame               UberGraphFrame;                                    // 0x28A0(0x0008)(ZeroConstructor, Transient, DuplicateTransient)
+	class FName                                   In_Bone_Name;                                      // 0x28A8(0x0008)(Edit, BlueprintVisible, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash)
 
 public:
-	void ExecuteUbergraph_CyberneticsSuspect_V2(int32 EntryPoint);
 	void ReceiveBeginPlay();
+	void ExecuteUbergraph_CyberneticsSuspect_V2(int32 EntryPoint);
 
 public:
 	static class UClass* StaticClass()
@@ -45,5 +44,4 @@ public:
 };
 DUMPER7_ASSERTS_ACyberneticsSuspect_V2_C;
 
-}
-
+SDK_NAMESPACE_END

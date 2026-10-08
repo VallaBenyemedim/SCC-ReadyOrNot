@@ -16,8 +16,7 @@
 #include "AimAssistSystem_structs.hpp"
 
 
-namespace SDK
-{
+SDK_NAMESPACE_START
 
 // Class AimAssistSystem.UASAimAssistComponent
 // 0x01C8 (0x0270 - 0x00A8)
@@ -238,5 +237,4 @@ public:
 };
 DUMPER7_ASSERTS_IVisibilityBlockerBypassInterface;
 
-}
-
+SDK_NAMESPACE_END

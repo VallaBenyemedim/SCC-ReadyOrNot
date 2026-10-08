@@ -11,8 +11,7 @@
 #include "Basic.hpp"
 
 
-namespace SDK
-{
+SDK_NAMESPACE_START
 
 // Enum Debug.EDebugLogType
 // NumValues: 0x0006
@@ -216,5 +215,4 @@ enum class EDebugLogComparisonMethod : uint8
 	CM_MAX                                   = 6,
 };
 
-}
-
+SDK_NAMESPACE_END

@@ -14,8 +14,7 @@
 #include "SlateCore_structs.hpp"
 
 
-namespace SDK
-{
+SDK_NAMESPACE_START
 
 // Enum CommonInput.ECommonInputType
 // NumValues: 0x0005
@@ -108,5 +107,4 @@ public:
 };
 DUMPER7_ASSERTS_FCommonInputPlatformBaseData;
 
-}
-
+SDK_NAMESPACE_END

@@ -24,8 +24,7 @@
 #include "InputCore_structs.hpp"
 
 
-namespace SDK
-{
+SDK_NAMESPACE_START
 
 // Class UMG.UserWidgetBlueprint
 // 0x0000 (0x00A8 - 0x00A8)
@@ -1981,7 +1980,7 @@ DUMPER7_ASSERTS_UBackgroundBlurSlot;
 // Class UMG.Border
 // 0x01B0 (0x0350 - 0x01A0)
 #pragma pack(push, 0x1)
-class alignas(0x10) UBorder : public UContentWidget
+class SDK_ALIGN(0x10) UBorder : public UContentWidget
 {
 public:
 	EHorizontalAlignment                          HorizontalAlignment;                               // 0x01A0(0x0001)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
@@ -2376,8 +2375,8 @@ public:
 	ETextOverflowPolicy                           OverflowPolicy;                                    // 0x04E3(0x0001)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	struct FShapedTextOptions                     ShapedTextOptions;                                 // 0x04E4(0x0003)(Edit, BlueprintVisible, BlueprintReadOnly, NoDestructor, AdvancedDisplay, NativeAccessSpecifierPublic)
 	uint8                                         Pad_4E7[0x1];                                      // 0x04E7(0x0001)(Fixing Size After Last Property [ Dumper-7 ])
-	TMulticastInlineDelegate<void(const class FText& Text)> OnTextChanged;                           // 0x04E8(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, NativeAccessSpecifierPublic)
-	TMulticastInlineDelegate<void(const class FText& Text, ETextCommit CommitMethod)> OnTextCommitted; // 0x04F8(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, NativeAccessSpecifierPublic)
+	TMulticastInlineDelegate<void(const class FText& Text_0)> OnTextChanged;                         // 0x04E8(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, NativeAccessSpecifierPublic)
+	TMulticastInlineDelegate<void(const class FText& Text_0, ETextCommit CommitMethod)> OnTextCommitted; // 0x04F8(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, NativeAccessSpecifierPublic)
 	uint8                                         Pad_508[0x18];                                     // 0x0508(0x0018)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
@@ -2441,8 +2440,8 @@ public:
 	ETextOverflowPolicy                           OverflowPolicy;                                    // 0x106B(0x0001)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	struct FShapedTextOptions                     ShapedTextOptions;                                 // 0x106C(0x0003)(Edit, BlueprintVisible, BlueprintReadOnly, NoDestructor, AdvancedDisplay, NativeAccessSpecifierPublic)
 	uint8                                         Pad_106F[0x1];                                     // 0x106F(0x0001)(Fixing Size After Last Property [ Dumper-7 ])
-	TMulticastInlineDelegate<void(const class FText& Text)> OnTextChanged;                           // 0x1070(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, NativeAccessSpecifierPublic)
-	TMulticastInlineDelegate<void(const class FText& Text, ETextCommit CommitMethod)> OnTextCommitted; // 0x1080(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, NativeAccessSpecifierPublic)
+	TMulticastInlineDelegate<void(const class FText& Text_0)> OnTextChanged;                         // 0x1070(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, NativeAccessSpecifierPublic)
+	TMulticastInlineDelegate<void(const class FText& Text_0, ETextCommit CommitMethod)> OnTextCommitted; // 0x1080(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, NativeAccessSpecifierPublic)
 	uint8                                         Pad_1090[0x10];                                    // 0x1090(0x0010)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
@@ -2654,7 +2653,7 @@ DUMPER7_ASSERTS_UHorizontalBoxSlot;
 // Class UMG.Image
 // 0x0168 (0x02F0 - 0x0188)
 #pragma pack(push, 0x1)
-class alignas(0x10) UImage : public UWidget
+class SDK_ALIGN(0x10) UImage : public UWidget
 {
 public:
 	uint8                                         Pad_188[0x8];                                      // 0x0188(0x0008)(Fixing Size After Last Property [ Dumper-7 ])
@@ -2716,7 +2715,7 @@ public:
 	bool                                          bAllowGamepadKeys;                                 // 0x0921(0x0001)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	uint8                                         Pad_922[0x6];                                      // 0x0922(0x0006)(Fixing Size After Last Property [ Dumper-7 ])
 	TArray<struct FKey>                           EscapeKeys;                                        // 0x0928(0x0010)(Edit, BlueprintVisible, BlueprintReadOnly, ZeroConstructor, NativeAccessSpecifierPublic)
-	TMulticastInlineDelegate<void(const struct FInputChord& SelectedKey)> OnKeySelected;             // 0x0938(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, NativeAccessSpecifierPublic)
+	TMulticastInlineDelegate<void(const struct FInputChord& SelectedKey_0)> OnKeySelected;           // 0x0938(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, NativeAccessSpecifierPublic)
 	TMulticastInlineDelegate<void()>              OnIsSelectingKeyChanged;                           // 0x0948(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, NativeAccessSpecifierPublic)
 	uint8                                         Pad_958[0x18];                                     // 0x0958(0x0018)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
@@ -2872,8 +2871,8 @@ public:
 	bool                                          AllowContextMenu;                                  // 0x0535(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	struct FVirtualKeyboardOptions                VirtualKeyboardOptions;                            // 0x0536(0x0001)(Edit, NoDestructor, AdvancedDisplay, NativeAccessSpecifierPublic)
 	EVirtualKeyboardDismissAction                 VirtualKeyboardDismissAction;                      // 0x0537(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TMulticastInlineDelegate<void(const class FText& Text)> OnTextChanged;                           // 0x0538(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, NativeAccessSpecifierPublic)
-	TMulticastInlineDelegate<void(const class FText& Text, ETextCommit CommitMethod)> OnTextCommitted; // 0x0548(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, NativeAccessSpecifierPublic)
+	TMulticastInlineDelegate<void(const class FText& Text_0)> OnTextChanged;                         // 0x0538(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, NativeAccessSpecifierPublic)
+	TMulticastInlineDelegate<void(const class FText& Text_0, ETextCommit CommitMethod)> OnTextCommitted; // 0x0548(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, NativeAccessSpecifierPublic)
 	uint8                                         Pad_558[0x18];                                     // 0x0558(0x0018)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
@@ -2920,8 +2919,8 @@ public:
 	struct FVirtualKeyboardOptions                VirtualKeyboardOptions;                            // 0x1072(0x0001)(Edit, NoDestructor, AdvancedDisplay, NativeAccessSpecifierPublic)
 	EVirtualKeyboardDismissAction                 VirtualKeyboardDismissAction;                      // 0x1073(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	uint8                                         Pad_1074[0x4];                                     // 0x1074(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
-	TMulticastInlineDelegate<void(const class FText& Text)> OnTextChanged;                           // 0x1078(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, NativeAccessSpecifierPublic)
-	TMulticastInlineDelegate<void(const class FText& Text, ETextCommit CommitMethod)> OnTextCommitted; // 0x1088(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, NativeAccessSpecifierPublic)
+	TMulticastInlineDelegate<void(const class FText& Text_0)> OnTextChanged;                         // 0x1078(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, NativeAccessSpecifierPublic)
+	TMulticastInlineDelegate<void(const class FText& Text_0, ETextCommit CommitMethod)> OnTextCommitted; // 0x1088(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, NativeAccessSpecifierPublic)
 	uint8                                         Pad_1098[0x18];                                    // 0x1098(0x0018)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
@@ -3427,7 +3426,7 @@ DUMPER7_ASSERTS_UScrollBar;
 // Class UMG.ScrollBox
 // 0x0B50 (0x0CF0 - 0x01A0)
 #pragma pack(push, 0x1)
-class alignas(0x10) UScrollBox : public UPanelWidget
+class SDK_ALIGN(0x10) UScrollBox : public UPanelWidget
 {
 public:
 	struct FScrollBoxStyle                        WidgetStyle;                                       // 0x01A0(0x0370)(Edit, BlueprintVisible, NativeAccessSpecifierPublic)
@@ -3843,7 +3842,7 @@ DUMPER7_ASSERTS_UStackBoxSlot;
 // Class UMG.TextBlock
 // 0x01E8 (0x0390 - 0x01A8)
 #pragma pack(push, 0x1)
-class alignas(0x10) UTextBlock : public UTextLayoutWidget
+class SDK_ALIGN(0x10) UTextBlock : public UTextLayoutWidget
 {
 public:
 	class FText                                   Text;                                              // 0x01A8(0x0018)(Edit, BlueprintVisible, NativeAccessSpecifierPublic)
@@ -4170,7 +4169,7 @@ DUMPER7_ASSERTS_UViewport;
 // Class UMG.WidgetComponent
 // 0x0140 (0x06F0 - 0x05B0)
 #pragma pack(push, 0x1)
-class alignas(0x10) UWidgetComponent : public UMeshComponent
+class SDK_ALIGN(0x10) UWidgetComponent : public UMeshComponent
 {
 public:
 	EWidgetSpace                                  Space;                                             // 0x05A8(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
@@ -4682,5 +4681,4 @@ public:
 };
 DUMPER7_ASSERTS_UWidgetTree;
 
-}
-
+SDK_NAMESPACE_END

@@ -16,8 +16,7 @@
 #include "AnimGraphRuntime_structs.hpp"
 
 
-namespace SDK
-{
+SDK_NAMESPACE_START
 
 // Enum MovieSceneTracks.MovieScene3DPathSection_Axis
 // NumValues: 0x0007
@@ -747,5 +746,4 @@ public:
 };
 DUMPER7_ASSERTS_FMovieSceneSkeletalAnimRootMotionTrackParams;
 
-}
-
+SDK_NAMESPACE_END

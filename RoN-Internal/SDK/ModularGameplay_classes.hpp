@@ -14,8 +14,7 @@
 #include "Engine_classes.hpp"
 
 
-namespace SDK
-{
+SDK_NAMESPACE_START
 
 // Class ModularGameplay.GameFrameworkComponent
 // 0x0000 (0x00A8 - 0x00A8)
@@ -66,12 +65,12 @@ public:
 
 public:
 	void AddReceiver(class AActor* Receiver, bool bAddOnlyInGameWorlds);
-	bool RegisterAndCallForActorInitState(class AActor* Actor, class FName FeatureName, const struct FGameplayTag& RequiredState, TDelegate<void(const struct FActorInitStateChangedParams& Params)> Delegate, bool bCallImmediately);
-	bool RegisterAndCallForClassInitState(TSoftClassPtr<class UClass> ActorClass, class FName FeatureName, const struct FGameplayTag& RequiredState, TDelegate<void(const struct FActorInitStateChangedParams& Params)> Delegate, bool bCallImmediately);
+	bool RegisterAndCallForActorInitState(class AActor* Actor, class FName FeatureName, const struct FGameplayTag& RequiredState, TDelegate<void(const struct FActorInitStateChangedParams& Params_0)> Delegate, bool bCallImmediately);
+	bool RegisterAndCallForClassInitState(TSoftClassPtr<class UClass> ActorClass, class FName FeatureName, const struct FGameplayTag& RequiredState, TDelegate<void(const struct FActorInitStateChangedParams& Params_0)> Delegate, bool bCallImmediately);
 	void RemoveReceiver(class AActor* Receiver);
 	void SendExtensionEvent(class AActor* Receiver, class FName EventName, bool bOnlyInGameWorlds);
-	bool UnregisterActorInitStateDelegate(class AActor* Actor, TDelegate<void(const struct FActorInitStateChangedParams& Params)> DelegateToRemove);
-	bool UnregisterClassInitStateDelegate(TSoftClassPtr<class UClass> ActorClass, TDelegate<void(const struct FActorInitStateChangedParams& Params)> DelegateToRemove);
+	bool UnregisterActorInitStateDelegate(class AActor* Actor, TDelegate<void(const struct FActorInitStateChangedParams& Params_0)> DelegateToRemove);
+	bool UnregisterClassInitStateDelegate(TSoftClassPtr<class UClass> ActorClass, TDelegate<void(const struct FActorInitStateChangedParams& Params_0)> DelegateToRemove);
 
 public:
 	static class UClass* StaticClass()
@@ -94,8 +93,8 @@ DUMPER7_ASSERTS_UGameFrameworkComponentManager;
 class IGameFrameworkInitStateInterface final
 {
 public:
-	bool RegisterAndCallForInitStateChange(const struct FGameplayTag& RequiredState, TDelegate<void(const struct FActorInitStateChangedParams& Params)> Delegate, bool bCallImmediately);
-	bool UnregisterInitStateDelegate(TDelegate<void(const struct FActorInitStateChangedParams& Params)> Delegate);
+	bool RegisterAndCallForInitStateChange(const struct FGameplayTag& RequiredState, TDelegate<void(const struct FActorInitStateChangedParams& Params_0)> Delegate, bool bCallImmediately);
+	bool UnregisterInitStateDelegate(TDelegate<void(const struct FActorInitStateChangedParams& Params_0)> Delegate);
 
 	class FName GetFeatureName() const;
 	struct FGameplayTag GetInitState() const;
@@ -186,5 +185,4 @@ public:
 };
 DUMPER7_ASSERTS_UPlayerStateComponent;
 
-}
-
+SDK_NAMESPACE_END

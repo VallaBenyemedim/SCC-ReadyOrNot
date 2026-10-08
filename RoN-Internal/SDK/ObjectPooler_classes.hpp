@@ -15,15 +15,14 @@
 #include "ObjectPooler_structs.hpp"
 
 
-namespace SDK
-{
+SDK_NAMESPACE_START
 
 // Class ObjectPooler.AsyncRetrieveActorFromPool
 // 0x0020 (0x0050 - 0x0030)
 class UAsyncRetrieveActorFromPool final : public UBlueprintAsyncActionBase
 {
 public:
-	TMulticastInlineDelegate<void(class UObjectPoolBase* ObjectPool, class APooledActor* RetrievedActor, bool bSuccess)> Completed; // 0x0030(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, NativeAccessSpecifierPublic)
+	TMulticastInlineDelegate<void(class UObjectPoolBase* ObjectPool_0, class APooledActor* RetrievedActor_0, bool bSuccess)> Completed; // 0x0030(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, NativeAccessSpecifierPublic)
 	class UObjectPoolBase*                        ObjectPool;                                        // 0x0040(0x0008)(ZeroConstructor, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
 	class APooledActor*                           RetrievedActor;                                    // 0x0048(0x0008)(ZeroConstructor, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
 
@@ -51,7 +50,7 @@ DUMPER7_ASSERTS_UAsyncRetrieveActorFromPool;
 class UAsyncRetrieveActorFromPool_Comp final : public UBlueprintAsyncActionBase
 {
 public:
-	TMulticastInlineDelegate<void(class UObjectPoolComponent* ObjectPool, class APooledActor* RetrievedActor, bool bSuccess)> Completed; // 0x0030(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, NativeAccessSpecifierPublic)
+	TMulticastInlineDelegate<void(class UObjectPoolComponent* ObjectPool, class APooledActor* RetrievedActor_0, bool bSuccess)> Completed; // 0x0030(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, NativeAccessSpecifierPublic)
 	class UObjectPoolComponent*                   ObjectPoolComponent;                               // 0x0040(0x0008)(ExportObject, ZeroConstructor, InstancedReference, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
 	class APooledActor*                           RetrievedActor;                                    // 0x0048(0x0008)(ZeroConstructor, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
 
@@ -310,5 +309,4 @@ public:
 };
 DUMPER7_ASSERTS_APooledActor;
 
-}
-
+SDK_NAMESPACE_END

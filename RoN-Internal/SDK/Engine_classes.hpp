@@ -10,6 +10,7 @@
 
 #include "Basic.hpp"
 
+#include "Chaos_structs.hpp"
 #include "Engine_structs.hpp"
 #include "SlateCore_structs.hpp"
 #include "CoreUObject_structs.hpp"
@@ -17,11 +18,10 @@
 #include "InputCore_structs.hpp"
 #include "PhysicsCore_structs.hpp"
 #include "PhysicsCore_classes.hpp"
-#include "AudioPlatformConfiguration_structs.hpp"
 #include "FieldNotification_structs.hpp"
 #include "DeveloperSettings_structs.hpp"
 #include "DeveloperSettings_classes.hpp"
-#include "Chaos_structs.hpp"
+#include "AudioPlatformConfiguration_structs.hpp"
 #include "AudioExtensions_structs.hpp"
 #include "AudioExtensions_classes.hpp"
 #include "IrisCore_classes.hpp"
@@ -31,8 +31,7 @@
 #include "MeshDescription_classes.hpp"
 
 
-namespace SDK
-{
+SDK_NAMESPACE_START
 
 // Class Engine.MaterialExpression
 // 0x0088 (0x00B0 - 0x0028)
@@ -1772,7 +1771,7 @@ DUMPER7_ASSERTS_UMaterialExpressionSamplePhysicsIntegerField;
 // Class Engine.MeshComponent
 // 0x0040 (0x05B0 - 0x0570)
 #pragma pack(push, 0x1)
-class alignas(0x10) UMeshComponent : public UPrimitiveComponent
+class SDK_ALIGN(0x10) UMeshComponent : public UPrimitiveComponent
 {
 public:
 	TArray<class UMaterialInterface*>             OverrideMaterials;                                 // 0x0570(0x0010)(Edit, ZeroConstructor, AdvancedDisplay, UObjectWrapper, NativeAccessSpecifierPublic)
@@ -2029,7 +2028,7 @@ DUMPER7_ASSERTS_UHLODBuilder;
 // Class Engine.StaticMeshComponent
 // 0x0080 (0x0630 - 0x05B0)
 #pragma pack(push, 0x1)
-class alignas(0x10) UStaticMeshComponent : public UMeshComponent
+class SDK_ALIGN(0x10) UStaticMeshComponent : public UMeshComponent
 {
 public:
 	int32                                         ForcedLodModel;                                    // 0x05A8(0x0004)(Edit, BlueprintVisible, BlueprintReadOnly, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
@@ -3221,7 +3220,7 @@ DUMPER7_ASSERTS_APawn;
 // Class Engine.Character
 // 0x0358 (0x0680 - 0x0328)
 #pragma pack(push, 0x1)
-class alignas(0x10) ACharacter : public APawn
+class SDK_ALIGN(0x10) ACharacter : public APawn
 {
 public:
 	class USkeletalMeshComponent*                 Mesh;                                              // 0x0328(0x0008)(Edit, BlueprintVisible, ExportObject, BlueprintReadOnly, ZeroConstructor, EditConst, InstancedReference, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
@@ -4237,7 +4236,7 @@ DUMPER7_ASSERTS_UParticleLODLevel;
 // Class Engine.LightComponentBase
 // 0x0040 (0x02E0 - 0x02A0)
 #pragma pack(push, 0x1)
-class alignas(0x10) ULightComponentBase : public USceneComponent
+class SDK_ALIGN(0x10) ULightComponentBase : public USceneComponent
 {
 public:
 	struct FGuid                                  LightGuid;                                         // 0x02A0(0x0010)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
@@ -4296,7 +4295,7 @@ DUMPER7_ASSERTS_ULightComponentBase;
 // Class Engine.LightComponent
 // 0x0110 (0x03F0 - 0x02E0)
 #pragma pack(push, 0x1)
-class alignas(0x10) ULightComponent : public ULightComponentBase
+class SDK_ALIGN(0x10) ULightComponent : public ULightComponentBase
 {
 public:
 	float                                         Temperature;                                       // 0x02D8(0x0004)(Edit, BlueprintVisible, BlueprintReadOnly, ZeroConstructor, IsPlainOldData, Interp, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
@@ -4391,7 +4390,7 @@ DUMPER7_ASSERTS_ULightComponent;
 // Class Engine.LocalLightComponent
 // 0x0020 (0x0410 - 0x03F0)
 #pragma pack(push, 0x1)
-class alignas(0x10) ULocalLightComponent : public ULightComponent
+class SDK_ALIGN(0x10) ULocalLightComponent : public ULightComponent
 {
 public:
 	ELightUnits                                   IntensityUnits;                                    // 0x03E8(0x0001)(Edit, BlueprintVisible, BlueprintReadOnly, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
@@ -11777,7 +11776,7 @@ DUMPER7_ASSERTS_ASpotLight;
 // Class Engine.Texture2D
 // 0x00B0 (0x0280 - 0x01D0)
 #pragma pack(push, 0x1)
-class alignas(0x10) UTexture2D : public UTexture
+class SDK_ALIGN(0x10) UTexture2D : public UTexture
 {
 public:
 	int32                                         FirstResourceMemMip;                               // 0x01C8(0x0004)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
@@ -11876,7 +11875,7 @@ DUMPER7_ASSERTS_AGeneratedMeshAreaLight;
 // Class Engine.TextureRenderTarget2D
 // 0x0030 (0x0200 - 0x01D0)
 #pragma pack(push, 0x1)
-class alignas(0x10) UTextureRenderTarget2D : public UTextureRenderTarget
+class SDK_ALIGN(0x10) UTextureRenderTarget2D : public UTextureRenderTarget
 {
 public:
 	int32                                         SizeX;                                             // 0x01D0(0x0004)(Edit, BlueprintVisible, BlueprintReadOnly, ZeroConstructor, IsPlainOldData, NoDestructor, AssetRegistrySearchable, HasGetValueTypeHash, NativeAccessSpecifierPublic)
@@ -13842,7 +13841,7 @@ DUMPER7_ASSERTS_AAudioVolume;
 // Class Engine.LevelStreaming
 // 0x0178 (0x01A0 - 0x0028)
 #pragma pack(push, 0x1)
-class alignas(0x10) ULevelStreaming : public UObject
+class SDK_ALIGN(0x10) ULevelStreaming : public UObject
 {
 public:
 	TSoftObjectPtr<class UWorld>                  WorldAsset;                                        // 0x0028(0x0028)(Edit, BlueprintVisible, BlueprintReadOnly, EditConst, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected)
@@ -24676,7 +24675,7 @@ public:
 	bool GetCookedFFTDataForAllPlayingSounds(TArray<struct FSoundWaveSpectralDataPerSound>* OutSoundWaveSpectralData);
 	TSet<class USoundModulatorBase*> GetModulators(const EModulationDestination Destination);
 	void Play(float StartTime);
-	void PlayQuantized(const class UObject* WorldContextObject, class UQuartzClockHandle*& InClockHandle, struct FQuartzQuantizationBoundary& InQuantizationBoundary, const TDelegate<void(EQuartzCommandDelegateSubType EventType, class FName Name)>& InDelegate, float InStartTime, float InFadeInDuration, float InFadeVolumeLevel, EAudioFaderCurve InFadeCurve);
+	void PlayQuantized(const class UObject* WorldContextObject, class UQuartzClockHandle*& InClockHandle, struct FQuartzQuantizationBoundary& InQuantizationBoundary, const TDelegate<void(EQuartzCommandDelegateSubType EventType, class FName Name_0)>& InDelegate, float InStartTime, float InFadeInDuration, float InFadeVolumeLevel, EAudioFaderCurve InFadeCurve);
 	void SetAudioBusSendPostEffect(class UAudioBus* AudioBus, float AudioBusSendLevel);
 	void SetAudioBusSendPreEffect(class UAudioBus* AudioBus, float AudioBusSendLevel);
 	void SetBoolParameter(class FName InName, bool InBool);
@@ -24857,7 +24856,7 @@ DUMPER7_ASSERTS_UBoxComponent;
 // Class Engine.SceneCaptureComponent
 // 0x00C0 (0x0360 - 0x02A0)
 #pragma pack(push, 0x1)
-class alignas(0x10) USceneCaptureComponent : public USceneComponent
+class SDK_ALIGN(0x10) USceneCaptureComponent : public USceneComponent
 {
 public:
 	ESceneCapturePrimitiveRenderMode              PrimitiveRenderMode;                               // 0x02A0(0x0001)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
@@ -29740,7 +29739,7 @@ DUMPER7_ASSERTS_UPluginCommandlet;
 // Class Engine.ArrowComponent
 // 0x0020 (0x0590 - 0x0570)
 #pragma pack(push, 0x1)
-class alignas(0x10) UArrowComponent : public UPrimitiveComponent
+class SDK_ALIGN(0x10) UArrowComponent : public UPrimitiveComponent
 {
 public:
 	struct FColor                                 ArrowColor;                                        // 0x0570(0x0004)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
@@ -29855,7 +29854,7 @@ DUMPER7_ASSERTS_UCapsuleComponent;
 // Class Engine.CharacterMovementComponent
 // 0x0E00 (0x0F60 - 0x0160)
 #pragma pack(push, 0x1)
-class alignas(0x10) UCharacterMovementComponent : public UPawnMovementComponent
+class SDK_ALIGN(0x10) UCharacterMovementComponent : public UPawnMovementComponent
 {
 public:
 	uint8                                         Pad_160[0x10];                                     // 0x0160(0x0010)(Fixing Size After Last Property [ Dumper-7 ])
@@ -38782,5 +38781,4 @@ public:
 };
 DUMPER7_ASSERTS_AWorldPartitionVolume;
 
-}
-
+SDK_NAMESPACE_END

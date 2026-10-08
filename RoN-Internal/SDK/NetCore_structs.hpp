@@ -11,8 +11,7 @@
 #include "Basic.hpp"
 
 
-namespace SDK
-{
+SDK_NAMESPACE_START
 
 // Enum NetCore.ENetworkFailure
 // NumValues: 0x000C
@@ -169,21 +168,6 @@ public:
 };
 DUMPER7_ASSERTS_FStateStruct;
 
-// ScriptStruct NetCore.EscalationState
-// 0x0018 (0x0030 - 0x0018)
-struct FEscalationState : public FStateStruct
-{
-public:
-	bool                                          bLogEscalate;                                      // 0x0018(0x0001)(ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bDormant;                                          // 0x0019(0x0001)(ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	int16                                         CooloffTime;                                       // 0x001A(0x0002)(ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	int16                                         AutoEscalateTime;                                  // 0x001C(0x0002)(ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	int8                                          HighestTimePeriod;                                 // 0x001E(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	uint8                                         Pad_1F[0x1];                                       // 0x001F(0x0001)(Fixing Size After Last Property [ Dumper-7 ])
-	TArray<int8>                                  AllTimePeriods;                                    // 0x0020(0x0010)(ZeroConstructor, Protected, NativeAccessSpecifierProtected)
-};
-DUMPER7_ASSERTS_FEscalationState;
-
 // ScriptStruct NetCore.FastArraySerializerItem
 // 0x000C (0x000C - 0x0000)
 struct FFastArraySerializerItem
@@ -219,6 +203,21 @@ public:
 };
 DUMPER7_ASSERTS_FNetAnalyticsDataConfig;
 
+// ScriptStruct NetCore.EscalationState
+// 0x0018 (0x0030 - 0x0018)
+struct FEscalationState : public FStateStruct
+{
+public:
+	bool                                          bLogEscalate;                                      // 0x0018(0x0001)(ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bDormant;                                          // 0x0019(0x0001)(ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	int16                                         CooloffTime;                                       // 0x001A(0x0002)(ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	int16                                         AutoEscalateTime;                                  // 0x001C(0x0002)(ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	int8                                          HighestTimePeriod;                                 // 0x001E(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	uint8                                         Pad_1F[0x1];                                       // 0x001F(0x0001)(Fixing Size After Last Property [ Dumper-7 ])
+	TArray<int8>                                  AllTimePeriods;                                    // 0x0020(0x0010)(ZeroConstructor, Protected, NativeAccessSpecifierProtected)
+};
+DUMPER7_ASSERTS_FEscalationState;
+
 // ScriptStruct NetCore.NetFaultState
 // 0x0010 (0x0040 - 0x0030)
 struct FNetFaultState final : public FEscalationState
@@ -236,5 +235,4 @@ public:
 };
 DUMPER7_ASSERTS_FNetFaultState;
 
-}
-
+SDK_NAMESPACE_END

@@ -14,8 +14,21 @@
 #include "CyberneticsSuspect_V2_parameters.hpp"
 
 
-namespace SDK
+SDK_NAMESPACE_START
+
+// Function CyberneticsSuspect_V2.CyberneticsSuspect_V2_C.ReceiveBeginPlay
+// (Event, Protected, BlueprintEvent)
+
+void ACyberneticsSuspect_V2_C::ReceiveBeginPlay()
 {
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = Class->GetFunction("CyberneticsSuspect_V2_C", "ReceiveBeginPlay");
+
+	UObject::ProcessEvent(Func, nullptr);
+}
+
 
 // Function CyberneticsSuspect_V2.CyberneticsSuspect_V2_C.ExecuteUbergraph_CyberneticsSuspect_V2
 // (Final, UbergraphFunction)
@@ -37,18 +50,4 @@ void ACyberneticsSuspect_V2_C::ExecuteUbergraph_CyberneticsSuspect_V2(int32 Entr
 }
 
 
-// Function CyberneticsSuspect_V2.CyberneticsSuspect_V2_C.ReceiveBeginPlay
-// (Event, Protected, BlueprintEvent)
-
-void ACyberneticsSuspect_V2_C::ReceiveBeginPlay()
-{
-	static class UFunction* Func = nullptr;
-
-	if (Func == nullptr)
-		Func = Class->GetFunction("CyberneticsSuspect_V2_C", "ReceiveBeginPlay");
-
-	UObject::ProcessEvent(Func, nullptr);
-}
-
-}
-
+SDK_NAMESPACE_END

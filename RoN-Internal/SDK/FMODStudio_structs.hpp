@@ -15,8 +15,7 @@
 #include "MovieSceneTracks_structs.hpp"
 
 
-namespace SDK
-{
+SDK_NAMESPACE_START
 
 // Enum FMODStudio.EFMODEventProperty
 // NumValues: 0x0007
@@ -236,5 +235,4 @@ public:
 };
 DUMPER7_ASSERTS_FFMODProjectLocale;
 
-}
-
+SDK_NAMESPACE_END

@@ -13,8 +13,7 @@
 #include "CoreUObject_structs.hpp"
 
 
-namespace SDK
-{
+SDK_NAMESPACE_START
 
 // Enum DynamicCoverSystem.ECrouchCoverType
 // NumValues: 0x0009
@@ -152,5 +151,4 @@ public:
 };
 DUMPER7_ASSERTS_FCoverGenResult;
 
-}
-
+SDK_NAMESPACE_END

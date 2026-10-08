@@ -14,8 +14,7 @@
 #include "ReadyOrNot_classes.hpp"
 
 
-namespace SDK
-{
+SDK_NAMESPACE_START
 
 // BlueprintGeneratedClass Cybernetics_Civilian_V2.Cybernetics_Civilian_V2_C
 // 0x0010 (0x28A0 - 0x2890)
@@ -45,5 +44,4 @@ public:
 };
 DUMPER7_ASSERTS_ACybernetics_Civilian_V2_C;
 
-}
-
+SDK_NAMESPACE_END

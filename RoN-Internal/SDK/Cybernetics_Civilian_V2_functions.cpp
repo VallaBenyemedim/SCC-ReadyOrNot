@@ -14,8 +14,7 @@
 #include "Cybernetics_Civilian_V2_parameters.hpp"
 
 
-namespace SDK
-{
+SDK_NAMESPACE_START
 
 // Function Cybernetics_Civilian_V2.Cybernetics_Civilian_V2_C.ExecuteUbergraph_Cybernetics_Civilian_V2
 // (Final, UbergraphFunction)
@@ -50,5 +49,5 @@ void ACybernetics_Civilian_V2_C::ReceiveBeginPlay()
 	UObject::ProcessEvent(Func, nullptr);
 }
 
-}
 
+SDK_NAMESPACE_END
