@@ -61,7 +61,7 @@ namespace OfficialScore
 
     void PatchPlayerController(SDK::UWorld* World)
     {
-        if (World->OwningGameInstance && World->OwningGameInstance->LocalPlayers.Num() > 0)
+        if (World->OwningGameInstance && World->OwningGameInstance->LocalPlayers.Num() > 0 && World->OwningGameInstance->LocalPlayers[0])
         {
             SDK::APlayerController* PC = World->OwningGameInstance->LocalPlayers[0]->PlayerController;
             if (PC && PC->IsA(SDK::AReadyOrNotPlayerController::StaticClass()))
@@ -92,7 +92,8 @@ namespace OfficialScore
 
             if (GM->IsA(SDK::ACommanderGM::StaticClass()))
             {
-                Profile = static_cast<SDK::ACommanderGM*>(GM)->CommanderProfile;
+                Profile = *reinterpret_cast<SDK::UCommanderProfile**>(
+                    reinterpret_cast<uintptr_t>(GM) + SDK::Offsets::CommanderGMProfile);
             }
             else if (GM->IsA(SDK::ALobbyGM::StaticClass()))
             {
@@ -122,7 +123,7 @@ namespace OfficialScore
 
     void Update(SDK::UWorld* World)
     {
-        if (!Config::Get().Misc.bForceOfficial || !World || !World->PersistentLevel) return;
+        if (!Config::Snapshot().Misc.bForceOfficial || !World || !World->PersistentLevel) return;
 
         PatchScoringManager(World);
         PatchPlayerController(World);

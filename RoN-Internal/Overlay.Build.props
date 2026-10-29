@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <OverlayRoot>$(MSBuildThisFileDirectory)</OverlayRoot>
+    <ImGuiRoot>$(OverlayRoot)..\third_party\imgui\</ImGuiRoot>
+    <MinHookRoot>$(OverlayRoot)..\third_party\minhook\</MinHookRoot>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(OverlayRoot);$(ImGuiRoot);$(MinHookRoot)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>d3d11.lib;d3d12.lib;dxgi.lib;d3dcompiler.lib;Comctl32.lib;Windowscodecs.lib;Ole32.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="$(OverlayRoot)OverlayScene.cpp" />
+    <ClCompile Include="$(OverlayRoot)GameplayUI.cpp" />
+    <ClCompile Include="$(ImGuiRoot)imgui.cpp" />
+    <ClCompile Include="$(ImGuiRoot)imgui_draw.cpp" />
+    <ClCompile Include="$(ImGuiRoot)imgui_tables.cpp" />
+    <ClCompile Include="$(ImGuiRoot)imgui_widgets.cpp" />
+    <ClCompile Include="$(ImGuiRoot)backends\imgui_impl_win32.cpp" />
+    <ClCompile Include="$(ImGuiRoot)backends\imgui_impl_dx11.cpp" />
+    <ClCompile Include="$(ImGuiRoot)backends\imgui_impl_dx12.cpp" />
+    <ClCompile Include="$(MinHookRoot)src\buffer.c" />
+    <ClCompile Include="$(MinHookRoot)src\hook.c" />
+    <ClCompile Include="$(MinHookRoot)src\trampoline.c" />
+    <ClCompile Include="$(MinHookRoot)src\hde\hde64.c" />
+  </ItemGroup>
+</Project>

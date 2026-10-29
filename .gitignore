@@ -1,26 +1,35 @@
-# Visual Studio
 .vs/
-x64/
-Debug/
-Release/
+**/x64/
+**/bin/
+**/obj/
 *.user
 *.suo
-*.opensdf
-*.sdf
-*.ipch
-
-# VS Code
-.vscode/
-
-# Build results
-[Bb]in/
-[Oo]bj/
+*.VC.db
+*.VC.opendb
+*.pdb
+*.obj
+*.iobj
+*.ipdb
 *.log
-*.tlog
-
-# SDK Cleanup
-RoN-Internal/SDK_Backup/
-cleanup_sdk.py
-
-# Gems and other temporary files
+*.ini
+*.tmp
+*.json
+__pycache__/
 tmp/
+artifacts/
+build-menu-harness.log
+menu-harness.log
+third_party/imgui/backends/*
+!third_party/imgui/backends/imgui_impl_win32.cpp
+!third_party/imgui/backends/imgui_impl_win32.h
+!third_party/imgui/backends/imgui_impl_dx11.cpp
+!third_party/imgui/backends/imgui_impl_dx11.h
+!third_party/imgui/backends/imgui_impl_dx12.cpp
+!third_party/imgui/backends/imgui_impl_dx12.h
+third_party/imgui/docs/
+third_party/imgui/examples/
+third_party/imgui/misc/
+third_party/minhook/build/
+third_party/minhook/cmake/
+third_party/minhook/dll_resources/
+

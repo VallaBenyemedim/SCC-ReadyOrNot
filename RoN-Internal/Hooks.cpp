@@ -4,19 +4,27 @@
 #include "SDK/Basic.hpp"
 #include <Windows.h>
 #include "Logger.hpp"
+#include "MenuUI.hpp"
+#include "GameInput.hpp"
+#include "Gameplay.hpp"
+#include <atomic>
 
 void** AHUD_VTable = nullptr;
 using ProcessEvent_t = void(*)(SDK::UObject*, SDK::UFunction*, void*);
-ProcessEvent_t oProcessEvent = nullptr;
+std::atomic<ProcessEvent_t> oProcessEvent{nullptr};
 bool bIsHooked = false;
+std::atomic<int> ActiveHudCalls{0};
+std::atomic<bool> HudStopping{false};
 
 // function to isolate SEH
 void SafeDrawHUD(SDK::AHUD* HUD)
 {
     __try
     {
+        Gameplay::Tick();
         if (HUD && HUD->Canvas)
         {
+            GameInput::Update(MenuUI::IsOpen());
             ESP::Draw(HUD->Canvas);
         }
     }
@@ -28,6 +36,9 @@ void SafeDrawHUD(SDK::AHUD* HUD)
 
 void hkProcessEvent(SDK::UObject* Caller, SDK::UFunction* Function, void* Parms)
 {
+    struct Scope { Scope(){++ActiveHudCalls;} ~Scope(){--ActiveHudCalls;} } Active;
+    const auto Original=oProcessEvent.load();
+    if (HudStopping) { if (Original) Original(Caller,Function,Parms); return; }
     if (Caller && Function)
     {
         std::string FuncName = Function->GetName();
@@ -35,8 +46,8 @@ void hkProcessEvent(SDK::UObject* Caller, SDK::UFunction* Function, void* Parms)
         // Check for DrawHUD event
         if (FuncName.find("ReceiveDrawHUD") != std::string::npos)
         {
-            if (oProcessEvent)
-                oProcessEvent(Caller, Function, Parms);
+            if (Original)
+                Original(Caller, Function, Parms);
 
             if (Caller->IsA(SDK::AHUD::StaticClass()))
             {
@@ -46,8 +57,8 @@ void hkProcessEvent(SDK::UObject* Caller, SDK::UFunction* Function, void* Parms)
         }
     }
 
-    if (oProcessEvent)
-        oProcessEvent(Caller, Function, Parms);
+    if (Original)
+        Original(Caller, Function, Parms);
 }
 
 bool Hooks::Init(SDK::AHUD* TargetHUD)
@@ -86,13 +97,13 @@ void Hooks::Reset()
 {
     // IMPORTANT: We must restore the VTable because VTables are shared across instances.
     // If it's not restored, the new HUD will use our hook, but our `oProcessEvent` will be null, causing a crash or other undefined behavior
-    if (bIsHooked && AHUD_VTable && oProcessEvent)
+    if (bIsHooked && AHUD_VTable && oProcessEvent.load())
     {
         int Index = SDK::Offsets::ProcessEventIdx;
         DWORD OldProtection;
         if (VirtualProtect(&AHUD_VTable[Index], sizeof(void*), PAGE_EXECUTE_READWRITE, &OldProtection))
         {
-            AHUD_VTable[Index] = (void*)oProcessEvent;
+            AHUD_VTable[Index] = reinterpret_cast<void*>(oProcessEvent.load());
             VirtualProtect(&AHUD_VTable[Index], sizeof(void*), OldProtection, &OldProtection);
             Logger::Log("[-] VTable Restored during Reset.");
         }
@@ -107,5 +118,8 @@ void Hooks::Reset()
 
 void Hooks::Shutdown()
 {
+    HudStopping.store(true);
     Hooks::Reset();
+    while (ActiveHudCalls.load()) Sleep(1);
+    Sleep(50);
 }

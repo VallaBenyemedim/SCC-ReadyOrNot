@@ -51,6 +51,7 @@
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
+    <TargetName>SCC-ReadyOrNot</TargetName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -113,6 +114,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -132,6 +134,10 @@
     <ClCompile Include="Config.cpp" />
     <ClCompile Include="ESP.cpp" />
     <ClCompile Include="GameData.cpp" />
+    <ClCompile Include="MissionTargets.cpp" />
+    <ClCompile Include="MenuUI.cpp" />
+    <ClCompile Include="GraphicsOverlay.cpp" />
+    <ClCompile Include="GameInput.cpp" />
     <ClCompile Include="Hooks.cpp" />
     <ClCompile Include="OfficialScore.cpp" />
     <ClCompile Include="Renderer.cpp" />
@@ -146,6 +152,13 @@
     <ClInclude Include="OfficialScore.hpp" />
     <ClInclude Include="Renderer.hpp" />
     <ClInclude Include="GameData.hpp" />
+    <ClInclude Include="EntityTypes.hpp" />
+    <ClInclude Include="ESPPresentation.hpp" />
+    <ClInclude Include="MissionModel.hpp" />
+    <ClInclude Include="MissionTargets.hpp" />
+    <ClInclude Include="MenuUI.hpp" />
+    <ClInclude Include="GraphicsOverlay.hpp" />
+    <ClInclude Include="GameInput.hpp" />
     <ClInclude Include="SDK\AIModule_classes.hpp" />
     <ClInclude Include="SDK\AIModule_structs.hpp" />
     <ClInclude Include="SDK\AimAssistSystem_classes.hpp" />
@@ -228,6 +241,8 @@
     <None Include="SDK\Assertions.inl" />
     <None Include="SDK\NameCollisions.inl" />
   </ItemGroup>
+  <Import Project="Overlay.Build.props" />
+  <ItemGroup><ClCompile Include="Gameplay.cpp" /></ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

@@ -1,5 +1,11 @@
 #include "GameData.hpp"
 #include "Config.hpp"
+#include "MissionTargets.hpp"
+#include "WeaponESP.hpp"
+#include "OverlayScene.hpp"
+#include "Logger.hpp"
+#include <unordered_map>
+#include <cmath>
 #include "SDK/ReadyOrNot_classes.hpp"
 #include "SDK/CyberneticsSuspect_V2_classes.hpp"
 #include "SDK/CyberneticsSwat_V2_classes.hpp"
@@ -11,8 +17,60 @@ std::mutex GameData::DataMutex;
 void GameData::Update(SDK::UWorld* World)
 {
     if (!World || !World->PersistentLevel) return;
+    const auto Settings = Config::Snapshot().ESP;
 
     std::vector<CachedEntity> LocalBuffer;
+    std::unordered_map<SDK::AActor*, size_t> Seen;
+    const auto Mission = MissionTargets::Read(World);
+    bool HasBombGoal = false, HasDoorGoal = false;
+    for (const auto& Rule : Mission.Rules) {
+        HasBombGoal |= Rule.Action == MissionModel::Kind::Defuse;
+        HasDoorGoal |= Rule.Action == MissionModel::Kind::Interact;
+    }
+    auto AddEntity = [&](CachedEntity Entity, MissionModel::Category Category = MissionModel::Category::Other, bool RequireMission = false) {
+        const bool IsTarget = MissionTargets::Apply(Entity, Mission, Category);
+        if (RequireMission && !IsTarget) return;
+        if (!IsTarget && ((Entity.Type == EEntityType::Suspect && !Settings.bSuspects)
+            || (Entity.Type == EEntityType::Civilian && !Settings.bCivilians)
+            || (Entity.Type == EEntityType::Ally && !Settings.bAllies))) return;
+        Entity.ActorIndex = Entity.Actor->Index;
+        const auto Found = Seen.find(Entity.Actor);
+        if (Found != Seen.end()) {
+            if (IsTarget && LocalBuffer[Found->second].MissionCaption.empty()) {
+                LocalBuffer[Found->second].MissionCaption = std::move(Entity.MissionCaption);
+                LocalBuffer[Found->second].MissionKind = Entity.MissionKind;
+                if (Entity.Type == EEntityType::Computer) LocalBuffer[Found->second].Type = Entity.Type;
+            }
+            return;
+        }
+        Seen.emplace(Entity.Actor, LocalBuffer.size());
+        LocalBuffer.push_back(std::move(Entity));
+    };
+    auto AddWeapon = [&](SDK::ABaseItem* Item) {
+        if (!Settings.bDroppedWeapon || !Item) return;
+        auto* Previous=Item->PreviousOwner;
+        auto* Evidence=Item->EvidenceComponent;
+        WeaponESP::State State;
+        State.IsWeapon=Item->IsA(SDK::ABaseWeapon::StaticClass());
+        State.InInventory=Item->bInInventory;
+        State.HasMesh=Item->ItemMesh!=nullptr;
+        State.HasCurrentOwner=Item->Owner!=nullptr;
+        State.PreviousSuspect=Previous && Previous->IsA(SDK::ACyberneticsSuspect_V2_C::StaticClass());
+        State.PreviousAlly=Previous && Previous->IsA(SDK::ACyberneticsSwat_V2_C::StaticClass());
+        State.Collected=Evidence && (Evidence->bEvidenceExtracted
+            || Evidence->EvidenceState==SDK::EEvidenceActorState::Collected
+            || Evidence->EvidenceState==SDK::EEvidenceActorState::Extraction);
+        State.MarkUnownedEvidence=Evidence && Evidence->bMarkAsEvidenceWhenNoOwner;
+        if (!WeaponESP::ShouldShow(State)) return;
+        CachedEntity Entity;
+        Entity.Actor=Item; Entity.Type=EEntityType::DroppedWeapon;
+        Entity.Handgun=Item->ItemClass==SDK::EItemClass::IC_Pistol;
+        if (Entity.Handgun) {
+            static bool Logged=false;
+            if (!Logged) {Logger::Log("[ESP] Ground handgun discovered: %s; previous owner %s",Item->GetName().c_str(),Previous?"present":"absent");Logged=true;}
+        }
+        AddEntity(std::move(Entity),MissionModel::Category::Evidence);
+    };
     
     SDK::APawn* MyPawn = nullptr;
     if (World->OwningGameInstance && World->OwningGameInstance->LocalPlayers.Num() > 0 && World->OwningGameInstance->LocalPlayers[0])
@@ -44,7 +102,29 @@ void GameData::Update(SDK::UWorld* World)
         NewEntity.Type = EEntityType::Unknown;
         NewEntity.Status = EEntityStatus::Active;
 
-        if (Config::Get().ESP.bTraps && Actor->IsA(SDK::ATrapActor::StaticClass()))
+        // Some world/evidence weapons have no PreviousOwner or are absent from AllItems.
+        if (Settings.bDroppedWeapon && Actor->IsA(SDK::ABaseItem::StaticClass())) {
+            AddWeapon(static_cast<SDK::ABaseItem*>(Actor));
+            continue;
+        }
+
+        if (HasBombGoal && Actor->IsA(SDK::ABombActor::StaticClass())) {
+            auto* Bomb = static_cast<SDK::ABombActor*>(Actor);
+            if (Bomb->BombState == SDK::EBombState::BS_Active) {
+                NewEntity.Type = EEntityType::Bomb;
+                if (std::isfinite(Bomb->TimeUntilExplodes) && Bomb->TimeUntilExplodes >= 0 && Bomb->TimeUntilExplodes < 86400)
+                    NewEntity.BombSeconds = static_cast<int>(std::ceil(Bomb->TimeUntilExplodes));
+                AddEntity(std::move(NewEntity), MissionModel::Category::Bomb, true);
+            }
+            continue;
+        }
+        if (HasDoorGoal && Actor->IsA(SDK::ADoor::StaticClass())) {
+            NewEntity.Type = EEntityType::MissionObject;
+            AddEntity(std::move(NewEntity), MissionModel::Category::Door, true);
+            continue;
+        }
+
+        if (Settings.bTraps && Actor->IsA(SDK::ATrapActor::StaticClass()))
         {
             NewEntity.Type = EEntityType::Trap;
             SDK::ATrapActor* Trap = static_cast<SDK::ATrapActor*>(Actor);
@@ -54,16 +134,16 @@ void GameData::Update(SDK::UWorld* World)
             else
                 NewEntity.Status = EEntityStatus::TrapDisabled;
 
-            LocalBuffer.push_back(NewEntity);
+            AddEntity(std::move(NewEntity));
             continue;
         }
 
         // AEvidenceActor (It is not the suspect's dropped weapon.)
-        if (Config::Get().ESP.bEvidence && Actor->IsA(SDK::AEvidenceActor::StaticClass()))
+        if ((Settings.bEvidence || !Mission.Rules.empty()) && Actor->IsA(SDK::AEvidenceActor::StaticClass()))
         {
             NewEntity.Type = EEntityType::Evidence;
             NewEntity.Status = EEntityStatus::Active;
-            LocalBuffer.push_back(NewEntity);
+            AddEntity(std::move(NewEntity), MissionModel::Category::Evidence, !Settings.bEvidence);
             continue;
         }
 
@@ -101,7 +181,7 @@ void GameData::Update(SDK::UWorld* World)
 
             if (NewEntity.Type != EEntityType::Unknown)
             {
-                LocalBuffer.push_back(NewEntity);
+                AddEntity(std::move(NewEntity), MissionModel::Category::Person);
             }
         }
         } // end actor loop
@@ -112,29 +192,18 @@ void GameData::Update(SDK::UWorld* World)
     {
         auto* GS = static_cast<SDK::AReadyOrNotGameState*>(World->GameState);
 
-        // Dropped suspect weapons: AllItems where bInInventory == false
-        if (Config::Get().ESP.bDroppedWeapon)
+        // Registry fallback; Seen prevents duplicates with streamed-level discovery.
+        if (Settings.bDroppedWeapon)
         {
             for (int i = 0; i < GS->AllItems.Num(); i++)
             {
-                auto* Item = GS->AllItems[i];
-                if (!Item || Item->bInInventory) continue;
-
-                // Only show weapons dropped by suspects
-                auto* Owner = Item->PreviousOwner;
-                if (!Owner || !Owner->IsA(SDK::ACyberneticsSuspect_V2_C::StaticClass())) continue;
-
-                CachedEntity NewEntity;
-                NewEntity.Actor = Item;
-                NewEntity.Type = EEntityType::DroppedWeapon;
-                NewEntity.Status = EEntityStatus::Active;
-                LocalBuffer.push_back(NewEntity);
+                AddWeapon(GS->AllItems[i]);
             }
         }
 
         // Reportable actors (mission-critical evidence NPCs/objects)
         // Skip already reported ones (bHasBeenReported at 0x02C1)
-        if (Config::Get().ESP.bReportable)
+        if (Settings.bReportable || !Mission.Rules.empty())
         {
             for (int i = 0; i < GS->AllReportableActors.Num(); i++)
             {
@@ -147,7 +216,7 @@ void GameData::Update(SDK::UWorld* World)
                 NewEntity.Actor = RA;
                 NewEntity.Type = EEntityType::Reportable;
                 NewEntity.Status = EEntityStatus::Active;
-                LocalBuffer.push_back(NewEntity);
+                AddEntity(std::move(NewEntity), MissionModel::Category::Reportable, !Settings.bReportable);
             }
         }
     }
@@ -158,6 +227,7 @@ void GameData::Update(SDK::UWorld* World)
 
 void GameData::Clear()
 {
+    OverlayScene::Clear();
     std::lock_guard<std::mutex> Lock(DataMutex);
     CachedEntities.clear();
 }

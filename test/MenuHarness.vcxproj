@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations"><ProjectConfiguration Include="Release|x64"><Configuration>Release</Configuration><Platform>x64</Platform></ProjectConfiguration></ItemGroup>
+  <PropertyGroup Label="Globals"><ProjectGuid>{A3E5C4B6-9A09-4A80-A0D5-0DE0B7771234}</ProjectGuid><WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion></PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration"><ConfigurationType>Application</ConfigurationType><UseDebugLibraries>false</UseDebugLibraries><PlatformToolset>v143</PlatformToolset><CharacterSet>Unicode</CharacterSet></PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <PropertyGroup><OutDir>$(ProjectDir)..\x64\MenuTests\</OutDir><IntDir>$(ProjectDir)..\x64\MenuTests\obj\</IntDir></PropertyGroup>
+  <ItemDefinitionGroup><ClCompile><LanguageStandard>stdcpp20</LanguageStandard><MultiProcessorCompilation>true</MultiProcessorCompilation><WarningLevel>Level3</WarningLevel><PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions></ClCompile><Link><SubSystem>Console</SubSystem></Link></ItemDefinitionGroup>
+  <Import Project="..\RoN-Internal\Overlay.Build.props" />
+  <ItemGroup>
+    <ClCompile Include="MenuHarness.cpp" />
+    <ClCompile Include="..\RoN-Internal\MenuUI.cpp" />
+    <ClCompile Include="..\RoN-Internal\GraphicsOverlay.cpp" />
+    <ClCompile Include="..\RoN-Internal\Config.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+</Project>

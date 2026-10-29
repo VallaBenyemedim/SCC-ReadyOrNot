@@ -1,70 +1,132 @@
-# RoN-Internal
+# SCC — Ready or Not
 
-A simple internal tool for *Ready or Not*. This project is developed for **educational purposes only**
+[Türkçe](README.tr.md) · **English**
 
-[RoN-Internal console](assets/Internal-console.png)  
-[RoN-Internal in game](assets/ingame.png)  
+SCC is a configurable in-game control panel and ESP for the Steam version of **Ready or Not**. It combines an x64 internal DLL, a Dear ImGui DirectX 11/12 overlay, dynamic mission-objective discovery, persistent profiles and safe cleanup.
 
-## Why?
+> Version-locked to Steam build `25784851`. Intended for educational, offline, single-player or private host-authorized sessions only. SCC is not affiliated with VOID Interactive and contains no anti-cheat bypass.
 
-I've been interested in how "game cheats" work so I decided to create an internal tool to find out. Ready or Not seemed like a great choice as it's a game I enjoy and I didn't find anyone making one for the 1.0 update. Here's what I built.
+This project started from [Herkkomehtala/ReadyOrNot-Internal](https://github.com/Herkkomehtala/ReadyOrNot-Internal) and was substantially updated with a new overlay, gameplay controls, objective model, tests and launcher.
 
-## Technical Overview
-- **Architecture:** Internal DLL (x64) using VTable hooking.
-- **Hooking:** Intercepts `AHUD::ReceiveDrawHUD` that allows rendering on the game's `UCanvas`.
-- **SDK:** SDK generated with [Dumper-7](https://github.com/Encryqed/Dumper-7)
+## Menu previews
+
+![SCC overview](docs/images/overview.png)
+
+| Player and team | Weapons |
+|---|---|
+| ![Player page](docs/images/player.png) | ![Weapons page](docs/images/weapons.png) |
+
+| Movement | NPC and world |
+|---|---|
+| ![Movement page](docs/images/movement.png) | ![NPC page](docs/images/npc.png) |
+
+| Visual filters | Mission objectives |
+|---|---|
+| ![Visuals page](docs/images/visuals.png) | ![Missions page](docs/images/missions.png) |
+
+| ESP colors | System |
+|---|---|
+| ![Colors page](docs/images/colors.png) | ![System page](docs/images/system.png) |
 
 ## Features
-- **ESP:** Simple 2D Box rendering with world-to-screen projection. Hooks the in-game UI so no external UI libraries like imgui needed
-- **Official Score Patch:** Memory patches `AScoringManager`, `AReadyOrNotPlayerController`, and `UCommanderProfile` to bypass "Modded" session flags. Level end screen might show modded playthrough but it counts as official.
-- **Configuration:** INI-based settings.
 
-## Project Structure
-- `RoN-Internal/`: Primary source code and project configuration.
-- `RoN-Internal/SDK/`: Minimal SDK headers and function implementations.
+### Player and team
 
-## How to Use
-1. **Build:** Open `RoN-Internal.sln` in Visual Studio 2022 and build the solution in **Release x64** mode.
-2. **Injection:** The project creates a DLL file and doesn't include an injector. You must use your own injector. The tool should open a console when it's loaded.
-3. **Configuration:** On first run, a configuration file (`RoN-Internal.ini`) will be generated in the same directory as the DLL. You can modify the file to adjust ESP colors and keybindings.
+- Configurable infinite player health
+- Injury prevention and limb-injury cleanup
+- Infinite health for living SWAT teammates
 
-### Example Configuration (`RoN-Internal.ini`)
-```ini
-[ESP]
-Enabled=1
-Box=1
-NameTags=1
-Traps=1
-Evidence=1
-DroppedWeapon=1
-Reportable=1
-BoxThickness=2.0
-# RGBA Floats (0.0 to 1.0)
-ColorSuspect=1.00,0.00,0.00,1.00
-ColorCivilian=0.00,1.00,0.00,1.00
-ColorAlly=0.00,0.50,1.00,1.00
-ColorArrested=1.00,0.50,0.00,1.00
-ColorTrap=1.00,0.00,1.00,1.00
-ColorEvidence=0.00,1.00,1.00,1.00
-ColorDroppedWeapon=1.00,1.00,0.00,1.00
-ColorReportable=1.00,0.50,1.00,1.00
+### Weapons and movement
 
-[Keys]
-# Keybindings
-ToggleESP=112      ; F1
-ReloadConfig=116   ; F5
-ToggleOfficial=117 ; F6
-DumpEntities=121   ; F10
-Detach=122         ; F11
+- Recoil toggle with a configurable remaining-recoil ratio
+- Keep the active magazine filled; safely restore weapon state on change/unload
+- Maximum base movement speed
+- Independent crouch, slow-walk and walk multipliers
 
-[Misc]
-ForceOfficial=1
+### NPC and world
 
-[Debug]
-ConsoleEnabled=1
-VerboseLog=0
+- Force suspects to surrender once or continuously
+- Force suspects to drop weapons
+- Configurable range: nearby NPCs or the complete map
+- Unlock scanned doors while enabled and restore session-owned changes on disable
+- Teleport the player to a selected NPC or bring that NPC near the player
+
+### ESP and objectives
+
+- Boxes, streamlined skeletons, type/name labels and distance
+- Separate filters for suspects, civilians, allies, weapons, evidence, traps and reportable objects
+- Pistols and long guns; inventory/held/allied weapons are filtered out
+- Dynamic arrest/rescue targets, bombs, computers/terminals and location/report objectives
+- Completed, failed, hidden or unrelated objectives stop receiving special markers
+- Adjustable line thickness, text scale, opacity, label background and overlap reduction
+- Per-category color editor and style preview
+
+### Interface and lifecycle
+
+- Nine-page SCC menu opened with `Insert`
+- Mouse input capture while the menu is open; game input restored when hidden
+- Save, reload and restore-default profile actions
+- Safe unload from the System page without closing the game
+- Game-build hash and live SDK-address validation before loading
+
+## Quick installation
+
+1. Download `SCC-ReadyOrNot-<version>.zip` from the repository's **Releases** page.
+2. Extract the complete archive to a permanent folder.
+3. Start Ready or Not through Steam and wait for the main menu.
+4. Run `SCC-ReadyOrNot-Aktif-Et.cmd`.
+5. Wait until the launcher confirms both the HUD hook and ImGui renderer.
+6. Press `Insert` to show or hide SCC.
+7. Save the profile from **System → Save**.
+8. Use **System → Completely unload** before updating or deleting SCC files.
+
+The launcher refuses unknown game builds and invalid live addresses. Do not remove those checks.
+
+See [the detailed English installation and troubleshooting guide](docs/INSTALLATION.en.md).
+
+## Build from source
+
+Requirements:
+
+- Windows 10/11 x64
+- Visual Studio 2022 C++ Build Tools, MSVC v143 and Windows SDK
+- PowerShell 5.1 or newer
+
+```powershell
+.\Build-RoN.ps1
 ```
 
-## Credits
-- [Dumper-7](https://github.com/Encryqed/Dumper-7)
-- VOID Interactive :D
+Output:
+
+```text
+x64\Release\SCC-ReadyOrNot.dll
+```
+
+Read-only compatibility check:
+
+```powershell
+.\Activate-RoN.ps1 -CheckOnly
+```
+
+## Tests
+
+```powershell
+.\test\run-esp-tests.cmd
+.\test\run-weapon-tests.cmd
+.\test\run-gameplay-tests.cmd
+.\test\run-menu-tests.ps1
+```
+
+The menu harness renders every page to PNG through a real hidden DirectX device and validates Insert toggling, resizing, save/load/default commands, menu-hidden ESP and safe unload behavior.
+
+## Configuration and logs
+
+- Profile: `x64\Release\SCC-ReadyOrNot.ini`
+- Log: `x64\Release\SCC-ReadyOrNot.log`
+- Menu toggle: `Insert`
+- Developer clean unload: `.\Activate-RoN.ps1 -Unload`
+
+## License and credits
+
+MIT. Dear ImGui, MinHook and the generated SDK retain their respective notices; see [THIRD_PARTY.md](THIRD_PARTY.md). Credits to Herkkomehtala, Dumper-7 and the original component authors.
+

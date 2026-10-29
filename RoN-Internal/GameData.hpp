@@ -2,30 +2,18 @@
 #include <vector>
 #include <mutex>
 #include "SDK/Engine_classes.hpp"
-
-enum class EEntityType {
-    Unknown,
-    Suspect,
-    Civilian,
-    Ally,
-    Trap,
-    Evidence,
-    DroppedWeapon,
-    Reportable
-};
-
-enum class EEntityStatus {
-    Active,     // Default state
-    Arrested,   // Hands cuffed
-    Dead,       // Dead or Unconscious
-    TrapLive,   // Live Trap
-    TrapDisabled // Disarmed/Exploded
-};
+#include "EntityTypes.hpp"
+#include "MissionModel.hpp"
 
 struct CachedEntity {
-    SDK::AActor* Actor;
-    EEntityType Type;
-    EEntityStatus Status;
+    SDK::AActor* Actor = nullptr;
+    EEntityType Type = EEntityType::Unknown;
+    EEntityStatus Status = EEntityStatus::Active;
+    int ActorIndex = -1;
+    MissionModel::Kind MissionKind = MissionModel::Kind::None;
+    std::wstring MissionCaption;
+    int BombSeconds = -1;
+    bool Handgun = false;
 };
 
 class GameData {
